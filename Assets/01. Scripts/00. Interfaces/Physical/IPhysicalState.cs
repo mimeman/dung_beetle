@@ -11,14 +11,7 @@
  */
 #endregion
 
-public enum PhysicalStateType
-{
-    None = 0,
-    Flipped,    // 뒤집힘           (일어나려면 A,D 연타)
-    StuckInMud, // 진흙에 빠짐       (용기 or 도구 필요)
-    Wet,        // 젖음             (똥이 무거워짐, 미끄러움)
-    Stunned     // 기절             (조작 불능)
-}
+using Dung.Enums;
 
 public interface IPhysicalState
 {

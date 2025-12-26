@@ -1,8 +1,4 @@
-﻿using UnityEngine;
-
-// 참고: GrowthType, ShrinkType Enum은 Scripts/Data/Enums/DungEnums.cs 에 정의됨.
-
-#region 설명
+﻿#region 설명
 /* [설명]
  * 오브젝트의 '질량(Mass)'과 '크기(Scale)' 변화를 관리하는 규약.
  * 쇠똥(DungBall)이 아이템을 흡수해 커지거나, 충격/날씨로 인해 작아지는 로직 담당.
@@ -18,6 +14,8 @@
  * Crumble : 완전 파괴.
  */
 #endregion
+
+using Dung.Enums;
 
 public interface IGrowable
 {

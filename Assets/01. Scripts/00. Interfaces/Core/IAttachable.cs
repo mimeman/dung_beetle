@@ -1,6 +1,4 @@
-﻿using UnityEngine;
-
-#region 설명
+﻿#region 설명
 /* [설명]
  * 오브젝트가 다른 표면(쇠똥)에 부착되거나 떨어져 나가는 행위를 정의함.
  * '괴혼'처럼 아이템들이 쇠똥에 물리적으로 달라붙어 덩어리를 형성하는 로직.
@@ -10,6 +8,8 @@
  * 2. Detach : 플레이어가 떼어가거나 충격으로 떨어짐 -> 물리 켜고 쇠똥에서 분리됨.
  */
 #endregion
+
+using UnityEngine;
 
 public interface IAttachable
 {
