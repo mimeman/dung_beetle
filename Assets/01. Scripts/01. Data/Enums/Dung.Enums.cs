@@ -19,6 +19,7 @@
 
     public enum ShrinkType
     {
+        Physical,
         Collision,  // 물리적 충돌
         Explosion,  // 폭발
         Burn,       // 불

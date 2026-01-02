@@ -1,15 +1,16 @@
 ﻿using UnityEngine;
 
+#region 설명
+/* [설명]
+ * 날씨 효과(비, 바람)에 반응하는 오브젝트의 규약
+ */
+#endregion
+
 public interface IWeatherReactive
 {
-
-    //날씨 저항력 (0.0 ~ 1.0). 1.0이면 완전 면역.
-    float WeatherResistance { get; }
-
-    // 비가 내릴 때 호출됨.
-    /// <param name="intensity">비의 세기 (0.0 ~ 1.0)</param>
+    /// <param name="intensity">비의 세기 (0.0 = 그침, 1.0 = 폭우)</param>
     void OnRain(float intensity);
 
-    // 바람 등 물리적 날씨 효과가 있을 때 호출됨.
+    /// <param name="force">바람의 방향과 세기 (월드 공간)</param>
     void OnWeatherForce(Vector3 force);
 }

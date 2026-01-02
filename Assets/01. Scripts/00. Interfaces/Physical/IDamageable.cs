@@ -4,16 +4,19 @@
  * 예 : 몬스터의 체력 감소, 나무 상자 파괴, 플레이어 사망 등.
  
  * [함수]
- * TakeDamage : 외부로부터 데미지를 입습니다. (가해자 정보 포함)
- * Die : 체력이 0이 되거나 즉사 조건일 때 사망 처리를 수행합니다.
+ * - TakeDamage : 외부로부터 데미지를 입습니다. (가해자 정보 포함)
+ * - Die : 체력이 0이 되거나 즉사 조건일 때 사망 처리를 수행합니다.
  */
 #endregion
 using UnityEngine;
 
 public interface IDamageable
 {
-    /// <param name="amount">데미지 수치)</param>
-    /// <param name="instigator">가해자 정보)</param>
-    void TakeDamage(float amount, GameObject instigator);
-    void Die(); //사망
+    float CurrentHealth { get; }
+    float MaxHealth { get; }
+
+    /// <param name="amount">데미지 수치 (양수)</param>
+    /// <param name="instigator">가해자 GameObject (null 가능, 환경 데미지 등)</param>
+    void TakeDamage(float amount, GameObject instigator = null);
+    void Die();
 }

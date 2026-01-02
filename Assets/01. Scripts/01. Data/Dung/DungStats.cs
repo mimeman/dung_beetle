@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace Dung.Data 
+namespace Dung.Data
 {
     [CreateAssetMenu(fileName = "DungStats", menuName = "DungBeetle/Stats/Dung Physics Stats", order = 1)]
     public class DungStats : ScriptableObject
@@ -23,8 +23,8 @@ namespace Dung.Data
         public class PhysicsData
         {
             [Header("저항력 (0.0 ~ 1.0)")]
-            public float weatherResistance = 0.2f; // 비 저항
-            public float impactResistance = 0.5f;  // 충돌 저항
+            public float weatherResistance = 0.2f;
+            public float impactResistance = 0.5f;
 
             [Header("물리 특성")]
             public float bounciness = 0.1f;
@@ -34,9 +34,17 @@ namespace Dung.Data
         [System.Serializable]
         public class VisualData
         {
-            public Material skinMaterial;    // 3D 모델 표면
-            public GameObject crumbleEffect; // 파괴 이펙트
-            public AudioClip rollSound;      // 구르는 소리
+            [Header("Visuals")]
+            public Material skinMaterial;
+            public GameObject crumbleEffect;
+
+            [Header("Sounds")]
+            public AudioClip rollSound;      
+            public AudioClip hitHard;        
+            public AudioClip hitSoft;        
+            public AudioClip growSound;      
+            public AudioClip breakSound;     
+            public float maxPitch = 1.5f;    
         }
     }
 }
