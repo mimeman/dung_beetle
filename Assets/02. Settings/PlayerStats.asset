@@ -1,0 +1,36 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b84d5d8760c0adb479eefca97d162570, type: 3}
+  m_Name: PlayerStats
+  m_EditorClassIdentifier: 
+  movement:
+    walkSpeed: 5
+    runSpeed: 8
+    rotationSpeed: 12
+    acceleration: 25
+    deceleration: 20
+    speedSmoothTime: 0.1
+    rotationSmoothTime: 0.1
+  push:
+    speedMultiplier: 0.7
+    pushRotationSpeed: 4
+  physics:
+    jumpForce: 5
+    gravityMultiplier: 2
+    flyUpForce: 10
+  detection:
+    groundLayer:
+      serializedVersion: 2
+      m_Bits: 128
+    interactLayer:
+      serializedVersion: 2
+      m_Bits: 0
