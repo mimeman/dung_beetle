@@ -1,8 +1,7 @@
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.AI;
 
-namespace AIBaseStates
+namespace AIStates
 {
     public class Idle : AnimalBaseState<AIController>
     {
@@ -11,6 +10,7 @@ namespace AIBaseStates
 
         public override void EnterState(AIController animal)
         {
+            Debug.Log($"Idle State Entered");
             animal.StopMoving();
             animal.SetAnimBool(animal.hashIsWalking, false);
             animal.SetAnimBool(animal.hashIsRunning, false);
@@ -43,6 +43,7 @@ namespace AIBaseStates
 
         public override void EnterState(AIController animal)
         {
+            Debug.Log($"Patrol State Entered");
             patrolDestination = animal.GetPatrolDestination();
             animal.SetAnimFloat(animal.hashMoveSpeed, 1f);
             entryTimer = 0f;
@@ -76,6 +77,7 @@ namespace AIBaseStates
     {
         public override void EnterState(AIController animal)
         {
+            Debug.Log($"Trace State Entered");
             animal.SetAnimFloat(animal.hashMoveSpeed, 2f);
         }
 
@@ -105,25 +107,48 @@ namespace AIBaseStates
         }
     }
 
+    public class Attack : AnimalBaseState<AIController>
+    {
+        private float timer;
+
+        public override void EnterState(AIController animal)
+        {
+            Debug.Log($"Attack State Entered");
+            animal.StopMoving();
+            animal.SetAnimTrigger(animal.hashAttack1);
+
+            LookAt(animal);
+
+            timer = 0;
+        }
+
+        public override void ExitState(AIController animal) { animal.StopAllCoroutines(); }
+
+        public override AnimalBaseState<AIController> UpdateState(AIController animal)
+        {
+            animal.StopMoving();
+
+            LookAt(animal);
+
+            timer += Time.deltaTime;
+            if (timer >= animal.Config.attackTimeout)
+                return animal.stateMachine.TraceState;
+
+            return this;
+        }
+
+        private void LookAt(AIController animal)
+        {
+            if (animal.target)
+                animal.LookAt(animal.target.transform.position);
+        }
+    }
+
     public class Interact : AnimalBaseState<AIController>
     {
         public override void EnterState(AIController animal)
         {
-            throw new System.NotImplementedException();
-        }
-
-        public override void ExitState(AIController animal) { }
-
-        public override AnimalBaseState<AIController> UpdateState(AIController animal)
-        {
-            throw new System.NotImplementedException();
-        }
-    }
-
-    public class Attack : AnimalBaseState<AIController>
-    {
-        public override void EnterState(AIController animal)
-        {
+            Debug.Log($"Interact State Entered");
             throw new System.NotImplementedException();
         }
 
@@ -142,6 +167,7 @@ namespace AIBaseStates
 
         public override void EnterState(AIController animal)
         {
+            Debug.Log($"Hit");
             timer = 0f;
             if (animal.TryGetComponent<NavMeshAgent>(out var agent))
                 agent.speed = animal.Config.runSpeed * 0.3f;
@@ -162,14 +188,32 @@ namespace AIBaseStates
     {
         public override void EnterState(AIController animal)
         {
-            throw new System.NotImplementedException();
+            Debug.Log($"Dead");
+            animal.StopMoving();
+            animal.StopAllCoroutines();
+
+            // TODO : 추후 AIController에 Die코드 만들어서 실행해줘도 될것 같음.
+            if (animal.TryGetComponent<Collider>(out var collider))
+                collider.enabled = false;
+
+            if (animal.TryGetComponent<NavMeshAgent>(out var agent))
+                agent.enabled = false;
+
+            // Sample Loot Logic
+            // AnimalHealth health = animal.GetComponent<AnimalHealth>();
+            // if (!health)// && !animal.Config.lootTable
+            //     health.SpawnLoot();// animal.Config.lootTable);
+
+            // TODO : Network Logic here
+            // if (!AnimalManager.Instance)
+            //     AnimalManager.Instance.RegisterAnimalDied();
         }
 
         public override void ExitState(AIController animal) { }
 
         public override AnimalBaseState<AIController> UpdateState(AIController animal)
         {
-            throw new System.NotImplementedException();
+            return this;
         }
     }
 

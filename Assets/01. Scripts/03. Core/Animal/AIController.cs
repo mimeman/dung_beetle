@@ -1,22 +1,27 @@
+using System.Collections;
 using Dung.Data;
+using Unity.VisualScripting.FullSerializer;
 using UnityEngine;
 using UnityEngine.AI;
 
+[RequireComponent(typeof(AnimalSensor))]
 public class AIController : MonoBehaviour
 {
     #region Properties
-    [Header("Animal 설정")]
+    [Header("Components")]
+    [SerializeField] private Animator animator;
+
+    [Header("Animal Settings")]
     [SerializeField] private AnimalConfig config;
     public AnimalConfig Config { get { return config; } }
 
-    [Header("Animation Hash 설정")]
+    [Header("Animation Hash Settings")]
     [SerializeField] private AnimalAnimationConfig animConfig;
 
     public AnimalBaseState<AIController> CurrentState { get; private set; }
-    public AnimalStateMachine stateMachine { get; private set; }
+    public BaseStateMachine stateMachine { get; private set; }
     public AnimalSensor sensor { get; private set; }
     public GameObject target { get; private set; }
-    public Vector3 currentDestination { get; private set; }
     public bool attacked { get; private set; }
     public bool arrivedAtDestination
     {
@@ -29,22 +34,28 @@ public class AIController : MonoBehaviour
         }
     }
 
-    private Animator animator;
+    private NavMeshMovement movement;   // 추후 interface로 받기
+    private AnimalHealth health;
     private NavMeshAgent agent;
+    private Vector3 currentDestination;
     private bool isHost;
     #endregion
 
     void Awake()
     {
+        stateMachine = GetComponent<BaseStateMachine>();
+        movement = GetComponent<NavMeshMovement>();
+        health = GetComponent<AnimalHealth>();
         sensor = GetComponent<AnimalSensor>();
         agent = GetComponent<NavMeshAgent>();
 
+        health.Initialize(config);
         InitializeAnimationHashes();
     }
 
     void Start()
     {
-        // isHost = NetworkManager.Instance != null && NetworkManager.Instance.IsHost;
+        isHost = NetworkManager.Instance != null && NetworkManager.Instance.IsHost;
 
         if (!isHost)
         {   // Client인 경우 : navmeshagent와 sensor 비활성화
@@ -54,32 +65,21 @@ public class AIController : MonoBehaviour
         }
         else
         {   // Host인 경우 : (Singleplayer도 포함되어있습니다.)
-            /// TODO : 필요한 경우 AddListener작업 해줍시다.
+            health.OnHit.AddListener(HandleHit);
+            health.OnDeath.AddListener(HandleHit);
         }
         ChangeState(stateMachine.IdleState);
     }
     void OnDisable()
     {
-        // TODO : event Listener를 제거해줍시다.
-    }
-
-    void InitializeAnimationHashes()
-    {
-        // hashMoveSpeed = Animator.StringToHash(animConfig.hash);
-        // hashIsWalking = Animator.StringToHash(animConfig.hash);
-        // hashIsRunning = Animator.StringToHash(animConfig.hash);
-        // hashAttack1 = Animator.StringToHash(animConfig.hash);
-        // hashAttack2 = Animator.StringToHash(animConfig.hash);
-        // hashAttack3 = Animator.StringToHash(animConfig.hash);
-        // hashAttack4 = Animator.StringToHash(animConfig.hash);
-        // hashHit = Animator.StringToHash(animConfig.hash);
-        // hashDie = Animator.StringToHash(animConfig.hash);
+        if (health)
+            health.OnHit.RemoveAllListeners();
     }
 
     void Update()
     {
         if (!isHost) return;
-        if (CurrentState == null)// || health.isDead)
+        if (CurrentState == null || health.IsDead)
             return;
 
         // Target update
@@ -105,10 +105,10 @@ public class AIController : MonoBehaviour
         currentDestination = destination;
         float speed = (CurrentState == stateMachine.TraceState) ? config.runSpeed : config.walkSpeed;
 
-        // movement.Move(destination, speed);
+        movement.Move(destination, speed);
 
-        // if (!agent)
-        //     movement.TurnToward(destination, config.rotateSpeed);
+        if (!agent)
+            movement.TurnTowards(destination, config.rotateSpeed);
     }
     // 특정 방향으로의 이동 함수
     public void MoveDirection(Vector3 direction, float speed)
@@ -118,16 +118,16 @@ public class AIController : MonoBehaviour
             agent.speed = speed;
             agent.SetDestination(transform.position + direction);
         }
-        // else
-        //     movement.Move(transform.position + direction, speed);
+        else
+            movement.Move(transform.position + direction, speed);
     }
     public void StopMoving()
     {
-        // movement.Stop();
+        movement.Stop();
     }
     public void LookAt(Vector3 target)
     {
-        // movement.TurnTowards(target, config.rotateSpeed);
+        movement.TurnTowards(target, config.rotateSpeed);
     }
     public Vector3 GetPatrolDestination()
     {
@@ -141,6 +141,9 @@ public class AIController : MonoBehaviour
             return hit.point;
         return destination;
     }
+    #endregion
+
+    #region Combat
     public float GetDistanceToTarget()
     {
         if (!target)
@@ -148,6 +151,57 @@ public class AIController : MonoBehaviour
         Vector3 myPos = new Vector3(transform.position.x, 0, transform.position.z);
         Vector3 targetPos = new Vector3(target.transform.position.x, 0, target.transform.position.z);
         return Vector3.Distance(myPos, targetPos);
+    }
+    public void ApplyDamageToTarget()
+    {
+        if (!target || health.IsDead || !isHost)
+            return;
+        if (GetDistanceToTarget() <= config.attackRange)
+        {
+            if (target.TryGetComponent<IPlayerControllable>(out IPlayerControllable playerControllable))
+            {   // Target이 Player일때
+                SessionManager sessionManager = NetworkManager.Instance.SessionManager;
+                // 서버 권위적 데미지 처리: 호스트는 데미지를 직접 적용하는 대신, 중앙 관리자(SessionManager)에게 데미지 처리를 요청
+                // SessionManager 해당 플레이어 클라이언트에게 데미지를 입으라는 메시지를 보냅니다.
+                if (sessionManager)
+                    sessionManager.HandleDamage(playerControllable.Id, config.attackDamage);
+            }
+        }
+    }
+
+    private void HandleHit()
+    {
+        if (!isHost || health.IsDead) return;
+
+        if (stateMachine)
+        {
+            SetAnimTrigger(hashHit);
+            ChangeState(stateMachine.HitState);
+        }
+    }
+    private void HandleDeath()
+    {
+        if (!isHost) return;
+
+        StopAllCoroutines();
+
+        if (!string.IsNullOrEmpty(animConfig.dieTrigger1))
+            SetAnimTrigger(hashDie);
+
+        ChangeState(stateMachine.DieState);
+
+        StartCoroutine(DespawnRoutine());
+    }
+    private IEnumerator DespawnRoutine()
+    {
+        yield return new WaitForSeconds(5.0f);
+
+        // // 스폰 매니저를 통해 몬스터를 풀에 반환하고 모든 클라이언트에게 despawn 메시지를 보냅니다.
+        // if (SpawnManager.Instance)
+        //     SpawnManager.Instance.ReturnMonsterToPool(gameObject);
+        // else
+
+        Destroy(gameObject);
     }
     #endregion
 
@@ -161,6 +215,19 @@ public class AIController : MonoBehaviour
     public int hashAttack4 { get; private set; }
     public int hashHit { get; private set; }
     public int hashDie { get; private set; }
+
+    void InitializeAnimationHashes()
+    {
+        hashMoveSpeed = Animator.StringToHash(animConfig.moveSpeedFloat);
+        hashIsWalking = Animator.StringToHash(animConfig.isWalkingBool);
+        hashIsRunning = Animator.StringToHash(animConfig.isRunningBool);
+        hashAttack1 = Animator.StringToHash(animConfig.actionTrigger1);
+        hashAttack2 = Animator.StringToHash(animConfig.actionTrigger2);
+        hashAttack3 = Animator.StringToHash(animConfig.actionTrigger3);
+        hashAttack4 = Animator.StringToHash(animConfig.actionTrigger4);
+        hashHit = Animator.StringToHash(animConfig.hitTrigger1);
+        hashDie = Animator.StringToHash(animConfig.dieTrigger1);
+    }
 
     public void SetAnimBool(int animHash, bool value)
     {

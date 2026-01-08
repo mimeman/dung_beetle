@@ -2,7 +2,7 @@ using UnityEngine;
 
 namespace Dung.Data
 {
-    // [CreateAssetMenu(fileName = "MonsterStats", menuName = "DungBeetle/Settings/MonsterStats/MonsterStats", order = 1)]
+    [CreateAssetMenu(fileName = "AnimalStats", menuName = "DungBeetle/AI/AnimalStats", order = 1)]
     public class AnimalConfig : ScriptableObject
     {
         [Header("Ability Settings")]
@@ -39,5 +39,10 @@ namespace Dung.Data
         public bool attackable = true;
         public float attackDelay = 0.5f;
         public float attackTimeout = 2f;
+
+        [Header("Animal Things")]
+        public float hungry = 50.0f;
+        public float poo = 0f;
+        public float energy = 80.0f;
     }
 }

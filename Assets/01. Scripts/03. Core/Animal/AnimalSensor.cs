@@ -1,8 +1,13 @@
 using System.Collections;
-using System.Collections.Generic;
 using System.Linq;
 using Dung.Data;
 using UnityEngine;
+
+// TODO : 추후 따로 구현해야함
+public interface IPlayerControllable
+{
+    string Id { get; }
+}
 
 /// <summary>
 /// Target = target GameObject
@@ -11,11 +16,11 @@ using UnityEngine;
 /// IsOnHeard = 플레이어를 보지는 못했는데 소리감지가 되었을때.
 /// ForceDetection(GameObject) : 강제target 설정
 /// </summary>
+/// 
 public class AnimalSensor : MonoBehaviour
 {
     #region Properties
-    [Header("감지 설정")]
-    [SerializeField] private AnimalConfig animalConfig;
+    [Header("Sensor Settings")]
     [Tooltip("감지할 대상의 Layer")]
     [SerializeField] private LayerMask targetMask;
     [Tooltip("감지할 대상 제외 Obstacle들의 Layer")]
@@ -27,15 +32,21 @@ public class AnimalSensor : MonoBehaviour
     [Tooltip("감지 Delay 시간")]
     [SerializeField] private float sensorDelay = 0.2f;
 
-    private GameObject target;
+    [Header("Debug Only")]
+    [SerializeField] private GameObject target;
+    // private GameObject target;
     public GameObject Target { get { return target; } }
-    private Vector3 targetLastPosition = Vector3.zero;
+    [SerializeField] private Vector3 targetLastPosition = Vector3.zero;
+    // private Vector3 targetLastPosition = Vector3.zero;
     public Vector3 TargeLastPosition { get { return targetLastPosition; } }
-    private bool isOnSight = false;
+    [SerializeField] private bool isOnSight = false;
+    // private bool isOnSight = false;
     public bool IsOnSight { get { return isOnSight; } }
-    private bool isOnHeard = false;
+    [SerializeField] private bool isOnHeard = false;
+    // private bool isOnHeard = false;
     public bool IsOnHeard { get { return isOnHeard; } }
 
+    private AnimalConfig animalConfig;
     private float memoryDelta = 0f;
     private WaitForSeconds checkDelay;
     private SessionManager sessionManager;
@@ -44,24 +55,19 @@ public class AnimalSensor : MonoBehaviour
 
     void Start()
     {
-        // isHost = NetworkManager.Instance != null && NetworkManager.Instance.IsHost;
+        animalConfig = GetComponent<AIController>().Config;
+
+        isHost = NetworkManager.Instance != null && NetworkManager.Instance.IsHost;
         checkDelay = new WaitForSeconds(sensorDelay);
 
         // // Network 설계
-        // networkType = NetworkManager.Instance.Mode;
-        // if (networkType == NetworkType.None)
-        //     sessionManager = GameManager.Instance.SingleSession;
-        // else
-        //     sessionManager = NetworkManager.Instance.SessionManager;
+        sessionManager = NetworkManager.Instance.SessionManager;
 
         if (isHost)
         {   // 호스트와 싱글에서만 실행
             StartCoroutine(CheckSensorRoutine());
             return;
         }
-
-        // Client일때 비활성화.
-        this.enabled = false;
     }
 
     void Update()
@@ -109,7 +115,7 @@ public class AnimalSensor : MonoBehaviour
         if (null == sessionManager)
             return;
 
-        var players = sessionManager.players.Values;
+        var players = sessionManager.Players.Values;
         if (null == players || 0 >= players.Count())
         {
             ClearTarget();
@@ -213,18 +219,31 @@ public class AnimalSensor : MonoBehaviour
         isOnSight = false;
         isOnHeard = false;
     }
-}
 
-// Temp Enum. 추후 네트워크 작업하면서 처리할 예정.
-public enum NetworkType
-{
-    None,
-    Client,
-    Host,
-    Server
+    #region Debug
+    public bool debug;
+    private void OnDrawGizmosSelected()
+    {
+        // 방어코드
+        if (!debug || !animalConfig)
+            return;
+
+        Gizmos.color = Color.cyan;
+        Gizmos.DrawWireSphere(transform.position, animalConfig.fovRange);
+
+        Gizmos.color = Color.yellow;
+        Gizmos.DrawWireSphere(transform.position, animalConfig.soundRange);
+
+        Vector3 fovLine1 = Quaternion.AngleAxis(animalConfig.fovAngle / 2, transform.up) * transform.forward * animalConfig.fovRange;
+        Vector3 fovLine2 = Quaternion.AngleAxis(-animalConfig.fovAngle / 2, transform.up) * transform.forward * animalConfig.fovRange;
+        Gizmos.DrawRay(transform.position, fovLine1);
+        Gizmos.DrawRay(transform.position, fovLine2);
+
+        if (target)
+        {
+            Gizmos.color = Color.green;
+            Gizmos.DrawLine(transform.position + Vector3.up * animalConfig.fovHeight, target.transform.position);
+        }
+    }
+    #endregion
 }
-public class SessionManager
-{
-    public IReadOnlyDictionary<byte, GameObject> players = new Dictionary<byte, GameObject>();
-}
-interface IPlayerControllable { }

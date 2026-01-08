@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public abstract class AnimalStateMachine : MonoBehaviour, Animal
+public abstract class BaseStateMachine : MonoBehaviour
 {
     // Basic States 기본상태들
     public abstract AnimalBaseState<AIController> IdleState { get; }        // Idle 상태
@@ -10,8 +10,4 @@ public abstract class AnimalStateMachine : MonoBehaviour, Animal
     public abstract AnimalBaseState<AIController> AttackState { get; }      // 전투를 해야하는 상태
     public abstract AnimalBaseState<AIController> HitState { get; }         // 전투에서 맞았을때
     public abstract AnimalBaseState<AIController> DieState { get; }         // 죽었을때.
-
-    public abstract AnimalBaseState<AIController> EatState { get; }
-    public abstract AnimalBaseState<AIController> PooState { get; }
-    public abstract AnimalBaseState<AIController> SleepState { get; }
 }

@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace BaseAnimalStates
+namespace AnimalStates
 {
     public class Eat : AnimalBaseState<AIController>
     {
