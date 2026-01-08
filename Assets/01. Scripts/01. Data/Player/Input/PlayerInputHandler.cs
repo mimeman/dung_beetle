@@ -1,5 +1,6 @@
-﻿using UnityEngine;
-using Dung.Inputs;
+﻿using Dung.Inputs;
+using UnityEngine;
+using UnityEngine.InputSystem;
 
 public class PlayerInputHandler : MonoBehaviour
 {
@@ -12,6 +13,7 @@ public class PlayerInputHandler : MonoBehaviour
     public bool IsDashPressed { get; private set; }
     public bool IsActionPressed { get; private set; }
     public bool IsAiming { get; private set; }
+
 
     public bool JumpTriggered { get; private set; }
     public bool InteractTriggered { get; private set; }
@@ -66,6 +68,7 @@ public class PlayerInputHandler : MonoBehaviour
     private void OnJumpEnd() => IsJumpPressed = false;
 
     private void OnDash(bool active) => IsDashPressed = !SuppressGameplayInput && active;
+
     private void OnInteract() { if (!SuppressGameplayInput) InteractTriggered = true; }
 
     private void OnAction(bool active)

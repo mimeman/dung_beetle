@@ -14,7 +14,10 @@ namespace Dung.Data
         [Header("3. 물리 설정 (점프 & 중력)")]
         public PhysicsData physics;
 
-        [Header("4. 감지 설정 (바닥 & 물체)")]
+        [Header("4. 비행 설정 (추가됨)")]
+        public FlightData flight;
+
+        [Header("5. 감지 설정 (바닥 & 물체)")]
         public DetectionData detection; 
 
 
@@ -40,6 +43,22 @@ namespace Dung.Data
             [Tooltip("방향 전환 부드러움 (SmoothDamp용)")]
             public float speedSmoothTime = 0.1f;
             public float rotationSmoothTime = 0.1f;
+        }
+
+        [System.Serializable]
+        public class FlightData
+        {
+            [Tooltip("비행 상승 힘")]
+            public float flyUpForce = 15.0f;
+
+            [Tooltip("최고 상승 속도 제한")]
+            public float maxFlySpeed = 5.0f;
+
+            [Tooltip("최대 비행 지속 시간")]
+            public float maxDuration = 1.5f;
+
+            [Tooltip("비행 후 재사용 대기시간")]
+            public float cooldown = 10.0f;
         }
 
         [System.Serializable]
