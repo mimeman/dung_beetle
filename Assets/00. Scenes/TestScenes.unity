@@ -333,10 +333,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f876b2d12869e2c4fbffec91fe0319a6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _input: {fileID: 105506100}
-  _stats: {fileID: 11400000, guid: 5f3ecdf1d56d4a847a24f4467cdbe028, type: 2}
-  _rb: {fileID: 105506101}
-  _cameraTransform: {fileID: 1520905467}
+  <Input>k__BackingField: {fileID: 105506100}
+  <Stats>k__BackingField: {fileID: 11400000, guid: 5f3ecdf1d56d4a847a24f4467cdbe028, type: 2}
+  <Rb>k__BackingField: {fileID: 105506101}
+  <CameraTransform>k__BackingField: {fileID: 1234062269}
+  <Anim>k__BackingField: {fileID: 0}
 --- !u!114 &105506100
 MonoBehaviour:
   m_ObjectHideFlags: 0
