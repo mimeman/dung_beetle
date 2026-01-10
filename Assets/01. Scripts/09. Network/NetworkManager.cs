@@ -20,10 +20,11 @@ public class NetworkManager : MonoBehaviour
 
         instance = this;
         DontDestroyOnLoad(gameObject);
+
+        sessionManager = GetComponent<SessionManager>();
     }
 
     void Start()
     {
-        sessionManager = GetComponent<SessionManager>();
     }
 }

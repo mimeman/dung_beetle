@@ -2,19 +2,19 @@ using UnityEngine;
 
 namespace HousedStates
 {
-    public class Build : AnimalBaseState<AIController>
+    public class Build : BaseState<AnimalController>
     {
-        public override void EnterState(AIController animal)
+        public override void EnterState(AnimalController animal)
         {
             throw new System.NotImplementedException();
         }
 
-        public override void ExitState(AIController animal)
+        public override void ExitState(AnimalController animal)
         {
             throw new System.NotImplementedException();
         }
 
-        public override AnimalBaseState<AIController> UpdateState(AIController animal)
+        public override BaseState<AnimalController> UpdateState(AnimalController animal)
         {
             throw new System.NotImplementedException();
         }

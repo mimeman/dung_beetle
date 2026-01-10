@@ -3,7 +3,7 @@ using BirdStates;
 using BreedStates;
 using UnityEngine;
 
-public class BirdStateMachine : AnimalStateMachine, IFlyable, IBreedable
+public class BirdStateMachine : AnimalStateMachine, IBird, IBreedable
 {
     [SerializeField] private bool isFlying;
 
@@ -14,20 +14,19 @@ public class BirdStateMachine : AnimalStateMachine, IFlyable, IBreedable
     private readonly Attack attackState = new Attack();
     private readonly Hit hitState = new Hit();
     private readonly Die dieState = new Die();
-
-    public override AnimalBaseState<AIController> IdleState => idleState;
-    public override AnimalBaseState<AIController> PatrolState => patrolState;
-    public override AnimalBaseState<AIController> TraceState => traceState;
-    public override AnimalBaseState<AIController> InteractState => interactState;
-    public override AnimalBaseState<AIController> AttackState => attackState;
-    public override AnimalBaseState<AIController> HitState => hitState;
-    public override AnimalBaseState<AIController> DieState => dieState;
+    public override BaseState<AnimalController> IdleState => idleState;
+    public override BaseState<AnimalController> PatrolState => patrolState;
+    public override BaseState<AnimalController> TraceState => traceState;
+    public override BaseState<AnimalController> InteractState => interactState;
+    public override BaseState<AnimalController> AttackState => attackState;
+    public override BaseState<AnimalController> HitState => hitState;
+    public override BaseState<AnimalController> DieState => dieState;
 
     private readonly Fly flyState = new Fly();
+    public BaseState<AnimalController> FlyState => flyState;
+
     private readonly Breed breedState = new Breed();
     private readonly Feed feedState = new Feed();
-
-    public AnimalBaseState<AIController> FlyState => flyState;
-    public AnimalBaseState<AIController> BreedState => breedState;
-    public AnimalBaseState<AIController> FeedState => feedState;
+    public BaseState<AnimalController> BreedState => breedState;
+    public BaseState<AnimalController> FeedState => feedState;
 }

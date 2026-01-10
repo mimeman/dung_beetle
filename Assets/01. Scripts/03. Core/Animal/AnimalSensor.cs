@@ -2,6 +2,7 @@ using System.Collections;
 using System.Linq;
 using Dung.Data;
 using UnityEngine;
+using UnityEngine.AI;
 
 // TODO : 추후 따로 구현해야함
 public interface IPlayerControllable
@@ -10,8 +11,7 @@ public interface IPlayerControllable
 }
 
 /// <summary>
-/// Target = target GameObject
-/// TargetPrevPosition = target의 마지막 위치값.
+/// 
 /// IsOnSight = 플레이어를 확실하게 포착했을때의 상태
 /// IsOnHeard = 플레이어를 보지는 못했는데 소리감지가 되었을때.
 /// ForceDetection(GameObject) : 강제target 설정
@@ -29,39 +29,45 @@ public class AnimalSensor : MonoBehaviour
     [SerializeField] private float rangeMultiplier = 1.5f;
     [Tooltip("대상을 기억하는 유지 시간")]
     [SerializeField] private float memoryDuration = 3.0f;
-    [Tooltip("감지 Delay 시간")]
-    [SerializeField] private float sensorDelay = 0.2f;
+    [Tooltip("Sensor 감지 주기")]
+    [SerializeField] private float sensorInterval = 0.2f;
 
-    [Header("Debug Only")]
-    [SerializeField] private GameObject target;
-    // private GameObject target;
+    [Header("LOD Settings")]
+    [Tooltip("NavMeshAgent 활성화 범위(제곱값)")]
+    [SerializeField] private float activeRadiusSq = 3000f;
+    [Tooltip("Active 감지 주기")]
+    [SerializeField] private float activeInterval = 0.5f;
+
+    private GameObject target;
     public GameObject Target { get { return target; } }
-    [SerializeField] private Vector3 targetLastPosition = Vector3.zero;
-    // private Vector3 targetLastPosition = Vector3.zero;
+    private Vector3 targetLastPosition = Vector3.zero;
     public Vector3 TargeLastPosition { get { return targetLastPosition; } }
-    [SerializeField] private bool isOnSight = false;
     // private bool isOnSight = false;
     public bool IsOnSight { get { return isOnSight; } }
-    [SerializeField] private bool isOnHeard = false;
     // private bool isOnHeard = false;
     public bool IsOnHeard { get { return isOnHeard; } }
+    // private bool isAnyPlayerNear;
+    public bool IsAnyPlayerNear { get { return isAnyPlayerNear; } }
 
-    private AnimalConfig animalConfig;
-    private float memoryDelta = 0f;
-    private WaitForSeconds checkDelay;
     private SessionManager sessionManager;
-    bool isHost;
+    private AnimalConfig animalConfig;
+    private NavMeshAgent agent;
+    private WaitForSeconds sensorDelay;
+    private WaitForSeconds activeDelay;
+    private float memoryDelta = 0f;
+    private bool isHost;
     #endregion
 
     void Start()
     {
-        animalConfig = GetComponent<AIController>().Config;
+        animalConfig = GetComponent<AnimalController>().Config;
+        agent = GetComponent<NavMeshAgent>();
+        sensorDelay = new WaitForSeconds(sensorInterval);
+        activeDelay = new WaitForSeconds(activeInterval);
 
-        isHost = NetworkManager.Instance != null && NetworkManager.Instance.IsHost;
-        checkDelay = new WaitForSeconds(sensorDelay);
-
-        // // Network 설계
+        // Network 설계
         sessionManager = NetworkManager.Instance.SessionManager;
+        isHost = NetworkManager.Instance != null && NetworkManager.Instance.IsHost;
 
         if (isHost)
         {   // 호스트와 싱글에서만 실행
@@ -79,7 +85,7 @@ public class AnimalSensor : MonoBehaviour
         }
     }
 
-    // 강제로 target을 설정해주는 함수
+    // 강제로 target을 설정해주는 함수 statemachine에서 hit에서 호출해주자. (if (!sensor.isonsight)일때)
     public void ForceDetection(GameObject attacker)
     {
         if (!isHost)
@@ -105,7 +111,16 @@ public class AnimalSensor : MonoBehaviour
         {
             // TODO: 몬스터의 Health 체크 필요 healthmanager.isdead ?-> ClearTarget();yield break;
             FindTarget();
-            yield return checkDelay;
+            if (isAnyPlayerNear)
+            {
+                ActivateAI();
+                yield return sensorDelay;
+            }
+            else
+            {
+                DeactivateAI();
+                yield return activeDelay;
+            }
         }
     }
 
@@ -123,7 +138,9 @@ public class AnimalSensor : MonoBehaviour
         }
 
         GameObject rawTarget = null;
-        float minDistance = float.MaxValue;
+        float minDistance = activeRadiusSq;
+        isAnyPlayerNear = false;
+        // 근처 플레이어 탐지.
         foreach (var player in players)
         {
             if (null == player.gameObject)
@@ -132,8 +149,11 @@ public class AnimalSensor : MonoBehaviour
             Vector3 playerPosition = player.gameObject.transform.position;
             float rawDistance = (transform.position - playerPosition).sqrMagnitude; // 성능을 위한 빠른 거리 계산
 
+            // Debug.Log($"raw:{rawDistance} vs min:{minDistance}");
             if (rawDistance > minDistance)
-                continue;   // 더 가까운 거리가 존재하면 pass
+                continue;
+            else
+                isAnyPlayerNear = true;
 
             if (IsTargetOnSensor(player.gameObject))
             {
@@ -143,16 +163,14 @@ public class AnimalSensor : MonoBehaviour
         }
 
         if (null != rawTarget)
-        {   // 시야에 target 감지.
+        {   // Sensor에 target 감지.
             memoryDelta = 0f;
             SetTarget(rawTarget);
         }
         else
-        {   // 시야에 들어온 target 없음.
-            if (memoryDelta > 0 && target != null && target.activeInHierarchy)
-            {   // 이전 타겟이 존재하고 있고 기억시간이 충분하다면 해당 타겟 유지
+        {   // Sensor에 들어온 target 없음
+            if (memoryDelta > 0 && target != null && target.activeInHierarchy)  // 이전 타겟이 존재하고 있고 기억시간이 충분하다면 해당 타겟 유지
                 targetLastPosition = target.transform.position;
-            }
             else
                 ClearTarget();
         }
@@ -173,16 +191,14 @@ public class AnimalSensor : MonoBehaviour
         Vector3 direction = (targetPos - sightPos).normalized;
         float distance = Vector3.Distance(transform.position, targetPos);
 
-        if (distance <= animalConfig.soundRange)
-        {   // 소리 감지
-            // TODO: Player의 소리가 안나는 상태의 움직임이 있다면 예외처리 해줘야합니다.
-            isOnHeard = true;
+        isOnSight = CheckFov(distance, sightPos, direction);
+        isOnHeard = CheckSound(distance);
 
-            // 장애물이 먼저 Raycast되었을때.
-            if (!Physics.Raycast(sightPos, direction, distance, obstuctionMask))
-                return true;
-        }
+        return isOnHeard || isOnSight;
+    }
 
+    bool CheckFov(float distance, Vector3 original, Vector3 direction)
+    {   // 시야 감지 로직
         if (distance <= animalConfig.fovRange)
         {   // 시야각 감지
             Vector3 forwardSensor = transform.forward;
@@ -192,15 +208,25 @@ public class AnimalSensor : MonoBehaviour
 
             if (Vector3.Angle(forwardSensor, targetDirection) < animalConfig.fovAngle / 2)
             {
-                if (!Physics.Raycast(sightPos, direction, distance, obstuctionMask))
+                if (!Physics.Raycast(original, direction, distance, obstuctionMask))
                 {
                     isOnSight = true;
                     return true;
                 }
             }
         }
+        return false;
+    }
 
-        isOnSight = false;
+    bool CheckSound(float distance)
+    {   // 사운드 감지 로직
+        if (distance <= animalConfig.soundRange)
+        {   // 소리 감지
+            // TODO: Player의 소리가 안나는 상태의 움직임이 있다면 예외처리 해줘야합니다.
+
+            isOnHeard = true;
+            return true;
+        }
         return false;
     }
 
@@ -220,19 +246,41 @@ public class AnimalSensor : MonoBehaviour
         isOnHeard = false;
     }
 
+    void ActivateAI()
+    {
+        if (!agent.enabled)
+        {
+            agent.enabled = true;
+            agent.Warp(transform.position);
+        }
+    }
+
+    void DeactivateAI()
+    {
+        if (agent.enabled)
+            agent.enabled = false;
+    }
+
     #region Debug
+    [Header("Debug")]
     public bool debug;
+    // [SerializeField] private GameObject target;
+    // [SerializeField] private Vector3 targetLastPosition = Vector3.zero;
+    [SerializeField] private bool isOnSight = false;
+    [SerializeField] private bool isOnHeard = false;
+    [SerializeField] private bool isAnyPlayerNear;
+
     private void OnDrawGizmosSelected()
     {
         // 방어코드
         if (!debug || !animalConfig)
             return;
 
-        Gizmos.color = Color.cyan;
-        Gizmos.DrawWireSphere(transform.position, animalConfig.fovRange);
-
         Gizmos.color = Color.yellow;
         Gizmos.DrawWireSphere(transform.position, animalConfig.soundRange);
+
+        Gizmos.color = Color.red;
+        Gizmos.DrawWireSphere(transform.position, animalConfig.fovRange);
 
         Vector3 fovLine1 = Quaternion.AngleAxis(animalConfig.fovAngle / 2, transform.up) * transform.forward * animalConfig.fovRange;
         Vector3 fovLine2 = Quaternion.AngleAxis(-animalConfig.fovAngle / 2, transform.up) * transform.forward * animalConfig.fovRange;

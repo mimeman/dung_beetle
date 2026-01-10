@@ -12,11 +12,11 @@ namespace Dung.Data
 
         [Header("AI Settings")]
         public LayerMask groundLayer;
-        public float fovRange = 10f;
+        public float fovRange = 15f;
         [Range(0, 360)]
         public float fovAngle = 120f;
         public float fovHeight = 1.5f;
-        public float soundRange = 15f;
+        public float soundRange = 10f;
         public float attackRange = 2f;
         public float stoppingDistance = 1.5f;
 
