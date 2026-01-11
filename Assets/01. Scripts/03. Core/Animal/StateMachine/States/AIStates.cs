@@ -36,10 +36,6 @@ namespace AIStates
             timer += Time.deltaTime;
             if (timer >= idleTime)
             {
-                // TODO : Animal State 분류화
-                var newState = animal.DoWhat();
-                if (null != newState)
-                    return newState;
                 return animal.stateMachine.PatrolState;
             }
             return this;

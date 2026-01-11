@@ -98,28 +98,6 @@ public class AnimalController : MonoBehaviour
         CurrentState?.EnterState(this);
     }
 
-    public BaseState<AnimalController> DoWhat()
-    {
-        var animalState = stateMachine as AnimalStateMachine;
-        var birdState = stateMachine as BirdStateMachine;
-
-        if (animalState)
-        {   // 동물 본능 State 실행 가능여부에 따른 실행
-            if (animalState.hunger <= 10)
-                return animalState.EatState;
-            if (animalState.poo >= 80)
-                return animalState.PooState;
-            if (animalState.energy <= 10)
-                return animalState.SleepState;
-        }
-        if (birdState)
-        {   // 조류일때
-            return birdState.FlyState;
-        }
-
-        return null;
-    }
-
     #region Movement
     // 일반 이동 함수
     public void MoveTo(Vector3 destination)

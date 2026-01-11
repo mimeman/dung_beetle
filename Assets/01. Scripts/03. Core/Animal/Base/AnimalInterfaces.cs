@@ -1,3 +1,14 @@
+public enum AnimalStateID
+{
+    Idle,
+    Eat,
+    Poo,
+    Sleep,
+    Breed,
+    Fly,
+    Swim
+}
+
 public interface IAnimal
 {
     // Animal States 동물본능 (먹싸자)
