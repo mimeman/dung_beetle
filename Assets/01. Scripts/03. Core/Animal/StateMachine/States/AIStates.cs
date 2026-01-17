@@ -10,12 +10,12 @@ namespace AIStates
     ///            time end -> Patrol
     ///            + AnimalStates에서 override시켜서 eat, poo, sleep을 해주도록 하면 될듯?
     /// </summary>
-    public class Idle : BaseState<AnimalController>
+    public class Idle : BaseState<AIController>
     {
         private float idleTime;
         private float timer;
 
-        public override void EnterState(AnimalController animal)
+        public override void EnterState(AIController animal)
         {
             Debug.Log($"{animal.name} Idle State Entered");
             animal.StopMoving();
@@ -25,9 +25,9 @@ namespace AIStates
             timer = 0f;
         }
 
-        public override void ExitState(AnimalController animal) { }
+        public override void ExitState(AIController animal) { }
 
-        public override BaseState<AnimalController> UpdateState(AnimalController animal)
+        public override BaseState<AIController> UpdateState(AIController animal)
         {
             if (animal.sensor.IsOnSight)
             {   // Target 발견시 Trace상태로 변경
@@ -51,13 +51,13 @@ namespace AIStates
     ///            !friendly + Sensor.isOnHeard -> Find?
     /// [ Exit ] -> movement.Stop
     /// </summary>
-    public class Patrol : BaseState<AnimalController>
+    public class Patrol : BaseState<AIController>
     {
         // private PatrolType patrolType;   // 어떤것을 탐색할것인가?
         private Vector3 patrolDestination;
         private float entryTimer;
 
-        public override void EnterState(AnimalController animal)
+        public override void EnterState(AIController animal)
         {
             Debug.Log($"{animal.name} Patrol State Entered");
             if (animal.sensor.IsOnHeard)   // 무언가 들은게 있다면
@@ -69,13 +69,13 @@ namespace AIStates
             entryTimer = 0f;
         }
 
-        public override void ExitState(AnimalController animal)
+        public override void ExitState(AIController animal)
         {
             animal.StopMoving();
             animal.SetAnimFloat(animal.hashMoveSpeed, 0f);
         }
 
-        public override BaseState<AnimalController> UpdateState(AnimalController animal)
+        public override BaseState<AIController> UpdateState(AIController animal)
         {
             // 우호적이지 않고 플레이어를 발견했거나 소리를 들었다면
             if (!animal.Config.friendly && animal.sensor.IsOnSight)
@@ -101,15 +101,15 @@ namespace AIStates
     ///            target -> Move(target)
     ///            ArrivedToTarget && !Sensor.isOnSight (목적지 도착 & Sensor에 시야에 잡히는게 없을때)
     /// </summary>
-    public class Trace : BaseState<AnimalController>
+    public class Trace : BaseState<AIController>
     {
-        public override void EnterState(AnimalController animal)
+        public override void EnterState(AIController animal)
         {
             Debug.Log($"{animal.name} Trace State Entered");
             animal.SetAnimFloat(animal.hashMoveSpeed, 2f);
         }
 
-        public override void ExitState(AnimalController animal)
+        public override void ExitState(AIController animal)
         {
             if (animal.CurrentState != animal.stateMachine.AttackState)
             // || animal.CurrentState != animal.stateMachine.BlockState)
@@ -118,7 +118,7 @@ namespace AIStates
             }
         }
 
-        public override BaseState<AnimalController> UpdateState(AnimalController animal)
+        public override BaseState<AIController> UpdateState(AIController animal)
         {
             if (!animal.Config.friendly || animal.attacked)
             {   // 우호적이나 공격당했을때.
@@ -142,11 +142,11 @@ namespace AIStates
     ///           StopMoving, LookAt(target)
     /// [ Update ] StopMoving, LookAt(target)
     /// </summary>
-    public class Attack : BaseState<AnimalController>
+    public class Attack : BaseState<AIController>
     {
         private float timer;
 
-        public override void EnterState(AnimalController animal)
+        public override void EnterState(AIController animal)
         {
             Debug.Log($"{animal.name} Attack State Entered");
             animal.StopMoving();
@@ -157,9 +157,9 @@ namespace AIStates
             timer = 0;
         }
 
-        public override void ExitState(AnimalController animal) { animal.StopAllCoroutines(); }
+        public override void ExitState(AIController animal) { animal.StopAllCoroutines(); }
 
-        public override BaseState<AnimalController> UpdateState(AnimalController animal)
+        public override BaseState<AIController> UpdateState(AIController animal)
         {
             animal.StopMoving();
 
@@ -172,35 +172,35 @@ namespace AIStates
             return this;
         }
 
-        private void LookAt(AnimalController animal)
+        private void LookAt(AIController animal)
         {
             if (animal.target)
                 animal.LookAt(animal.target.transform.position);
         }
     }
 
-    public class Interact : BaseState<AnimalController>
+    public class Interact : BaseState<AIController>
     {
-        public override void EnterState(AnimalController animal)
+        public override void EnterState(AIController animal)
         {
             Debug.Log($"{animal.name} Interact State Entered");
             throw new System.NotImplementedException();
         }
 
-        public override void ExitState(AnimalController animal) { }
+        public override void ExitState(AIController animal) { }
 
-        public override BaseState<AnimalController> UpdateState(AnimalController animal)
+        public override BaseState<AIController> UpdateState(AIController animal)
         {
             throw new System.NotImplementedException();
         }
     }
 
-    public class Hit : BaseState<AnimalController>
+    public class Hit : BaseState<AIController>
     {
         private float hitStunDuration = 0.5f;
         private float timer;
 
-        public override void EnterState(AnimalController animal)
+        public override void EnterState(AIController animal)
         {
             Debug.Log($"{animal.name} Hit");
             timer = 0f;
@@ -208,9 +208,9 @@ namespace AIStates
                 agent.speed = animal.Config.runSpeed * 0.3f;
         }
 
-        public override void ExitState(AnimalController animal) { }
+        public override void ExitState(AIController animal) { }
 
-        public override BaseState<AnimalController> UpdateState(AnimalController animal)
+        public override BaseState<AIController> UpdateState(AIController animal)
         {
             timer += Time.deltaTime;
             if (timer > -hitStunDuration)
@@ -219,9 +219,9 @@ namespace AIStates
         }
     }
 
-    public class Die : BaseState<AnimalController>
+    public class Die : BaseState<AIController>
     {
-        public override void EnterState(AnimalController animal)
+        public override void EnterState(AIController animal)
         {
             Debug.Log($"{animal.name} Dead");
             animal.StopMoving();
@@ -244,9 +244,9 @@ namespace AIStates
             //     AnimalManager.Instance.RegisterAnimalDied();
         }
 
-        public override void ExitState(AnimalController animal) { }
+        public override void ExitState(AIController animal) { }
 
-        public override BaseState<AnimalController> UpdateState(AnimalController animal)
+        public override BaseState<AIController> UpdateState(AIController animal)
         {
             return this;
         }

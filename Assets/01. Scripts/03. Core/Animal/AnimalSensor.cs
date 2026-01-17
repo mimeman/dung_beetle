@@ -60,7 +60,7 @@ public class AnimalSensor : MonoBehaviour
 
     void Start()
     {
-        animalConfig = GetComponent<AnimalController>().Config;
+        animalConfig = GetComponent<AIController>().Config;
         agent = GetComponent<NavMeshAgent>();
         sensorDelay = new WaitForSeconds(sensorInterval);
         activeDelay = new WaitForSeconds(activeInterval);

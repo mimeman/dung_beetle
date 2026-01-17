@@ -1,11 +1,10 @@
+using Dung.Data;
 using UnityEngine;
 using UnityEngine.AI;
 
 [RequireComponent(typeof(NavMeshAgent))]
 public class NavMeshMovement : MonoBehaviour
 {
-    [Header("Components")]
-    [SerializeField] private Animator animator;
 
     [Header("Accel & Decel Settings")]
     [SerializeField] private float accelerationRate = 5f;
@@ -14,7 +13,9 @@ public class NavMeshMovement : MonoBehaviour
     [Header("LOD Settings")]
     [SerializeField] private LayerMask groundLayer;
 
+    private Animator animator;
     private Vector3 destination;
+    private AnimalAnimationConfig animationConfig;
     private NavMeshAgent agent;
     private float targetSpeed;
     private float stoppingDistance;
@@ -26,6 +27,12 @@ public class NavMeshMovement : MonoBehaviour
         stoppingDistance = agent.stoppingDistance;
     }
 
+    public void SetUp(Animator animator, AnimalAnimationConfig animationConfig)
+    {
+        this.animator = animator;
+        this.animationConfig = animationConfig;
+    }
+
     void Update()
     {
         float currentSpeed = agent.speed;
@@ -34,7 +41,7 @@ public class NavMeshMovement : MonoBehaviour
         if (agent.enabled)
         {
             agent.speed = Mathf.MoveTowards(currentSpeed, targetSpeed, Time.deltaTime * rate);
-            animator.SetFloat("speed", agent.velocity.magnitude);
+            animator.SetFloat(animationConfig.moveSpeedFloat, agent.velocity.magnitude);
         }
         else
             SimulateLODMovement();

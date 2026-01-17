@@ -2,18 +2,18 @@ using UnityEngine;
 
 namespace AnimalStates
 {
-    public class Eat : BaseState<AnimalController>
+    public class Eat : BaseState<AIController>
     {
         AnimalStateMachine animalStateMachine;
-        public override void EnterState(AnimalController animal)
+        public override void EnterState(AIController animal)
         {
             animalStateMachine = animal.stateMachine as AnimalStateMachine;
             animal.SetAnimBool(animal.hashEat, true);
         }
 
-        public override void ExitState(AnimalController animal) { }
+        public override void ExitState(AIController animal) { }
 
-        public override BaseState<AnimalController> UpdateState(AnimalController animal)
+        public override BaseState<AIController> UpdateState(AIController animal)
         {
             if (animalStateMachine.hunger <= 80)
                 return animal.stateMachine.IdleState;
@@ -23,37 +23,37 @@ namespace AnimalStates
         }
     }
 
-    public class Poo : BaseState<AnimalController>
+    public class Poo : BaseState<AIController>
     {
-        public override void EnterState(AnimalController animal)
+        public override void EnterState(AIController animal)
         {
             throw new System.NotImplementedException();
         }
 
-        public override void ExitState(AnimalController animal)
+        public override void ExitState(AIController animal)
         {
             throw new System.NotImplementedException();
         }
 
-        public override BaseState<AnimalController> UpdateState(AnimalController animal)
+        public override BaseState<AIController> UpdateState(AIController animal)
         {
             throw new System.NotImplementedException();
         }
     }
 
-    public class Sleep : BaseState<AnimalController>
+    public class Sleep : BaseState<AIController>
     {
-        public override void EnterState(AnimalController animal)
+        public override void EnterState(AIController animal)
         {
             throw new System.NotImplementedException();
         }
 
-        public override void ExitState(AnimalController animal)
+        public override void ExitState(AIController animal)
         {
             throw new System.NotImplementedException();
         }
 
-        public override BaseState<AnimalController> UpdateState(AnimalController animal)
+        public override BaseState<AIController> UpdateState(AIController animal)
         {
             throw new System.NotImplementedException();
         }

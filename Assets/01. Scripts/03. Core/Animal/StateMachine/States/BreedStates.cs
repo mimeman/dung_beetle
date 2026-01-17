@@ -2,37 +2,37 @@ using UnityEngine;
 
 namespace BreedStates
 {
-    public class Breed : BaseState<AnimalController>
+    public class Breed : BaseState<AIController>
     {
-        public override void EnterState(AnimalController animal)
+        public override void EnterState(AIController animal)
         {
             throw new System.NotImplementedException();
         }
 
-        public override void ExitState(AnimalController animal)
+        public override void ExitState(AIController animal)
         {
             throw new System.NotImplementedException();
         }
 
-        public override BaseState<AnimalController> UpdateState(AnimalController animal)
+        public override BaseState<AIController> UpdateState(AIController animal)
         {
             throw new System.NotImplementedException();
         }
     }
 
-    public class Feed : BaseState<AnimalController>
+    public class Feed : BaseState<AIController>
     {
-        public override void EnterState(AnimalController animal)
+        public override void EnterState(AIController animal)
         {
             throw new System.NotImplementedException();
         }
 
-        public override void ExitState(AnimalController animal)
+        public override void ExitState(AIController animal)
         {
             throw new System.NotImplementedException();
         }
 
-        public override BaseState<AnimalController> UpdateState(AnimalController animal)
+        public override BaseState<AIController> UpdateState(AIController animal)
         {
             throw new System.NotImplementedException();
         }

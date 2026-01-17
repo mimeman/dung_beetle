@@ -14,19 +14,19 @@ public class BirdStateMachine : AnimalStateMachine, IBird, IBreedable
     private readonly Attack attackState = new Attack();
     private readonly Hit hitState = new Hit();
     private readonly Die dieState = new Die();
-    public override BaseState<AnimalController> IdleState => idleState;
-    public override BaseState<AnimalController> PatrolState => patrolState;
-    public override BaseState<AnimalController> TraceState => traceState;
-    public override BaseState<AnimalController> InteractState => interactState;
-    public override BaseState<AnimalController> AttackState => attackState;
-    public override BaseState<AnimalController> HitState => hitState;
-    public override BaseState<AnimalController> DieState => dieState;
+    public override BaseState<AIController> IdleState => idleState;
+    public override BaseState<AIController> PatrolState => patrolState;
+    public override BaseState<AIController> TraceState => traceState;
+    public override BaseState<AIController> InteractState => interactState;
+    public override BaseState<AIController> AttackState => attackState;
+    public override BaseState<AIController> HitState => hitState;
+    public override BaseState<AIController> DieState => dieState;
 
     private readonly Fly flyState = new Fly();
-    public BaseState<AnimalController> FlyState => flyState;
+    public BaseState<AIController> FlyState => flyState;
 
     private readonly Breed breedState = new Breed();
     private readonly Feed feedState = new Feed();
-    public BaseState<AnimalController> BreedState => breedState;
-    public BaseState<AnimalController> FeedState => feedState;
+    public BaseState<AIController> BreedState => breedState;
+    public BaseState<AIController> FeedState => feedState;
 }
