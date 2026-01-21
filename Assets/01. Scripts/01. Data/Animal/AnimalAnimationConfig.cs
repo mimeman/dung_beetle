@@ -8,6 +8,10 @@ namespace Dung.Data
         [Header("Movement Parameters")]
         public string moveSpeedFloat = "Locomotion";
         public string idleTypeInt = "IdleType";
+        [Header("Birds Flying")]
+        public string flyingBoolHash = "flying";
+        public string landingBoolHash = "landing";
+        public string flyingDirectionHash;
 
         [Header("State Parameters (bool)")]
         public string isWalkingBool = "Patrol";

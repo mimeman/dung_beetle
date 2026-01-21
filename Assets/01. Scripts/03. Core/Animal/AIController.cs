@@ -3,19 +3,19 @@ using Dung.Data;
 using UnityEngine;
 using UnityEngine.AI;
 
-[RequireComponent(typeof(AnimalSensor))]
+[RequireComponent(typeof(NavMeshAgent), typeof(NavMeshMovement), typeof(AnimalSensor))]
 public class AIController : MonoBehaviour
 {
     #region Properties
     [Header("Components")]
-    [SerializeField] private Animator animator;
+    [SerializeField] protected Animator animator;
 
     [Header("Animal Settings")]
-    [SerializeField] private AnimalConfig config;
+    [SerializeField] protected AnimalConfig config;
     public AnimalConfig Config { get { return config; } }
 
     [Header("Animation Hash Settings")]
-    [SerializeField] private AnimalAnimationConfig animConfig;
+    [SerializeField] protected AnimalAnimationConfig animConfig;
 
     public BaseState<AIController> CurrentState { get; private set; }
     public BaseStateMachine stateMachine { get; private set; }
@@ -57,6 +57,11 @@ public class AIController : MonoBehaviour
 
     void Start()
     {
+        Initialize();
+    }
+
+    protected virtual void Initialize()
+    {
         isHost = NetworkManager.Instance != null && NetworkManager.Instance.IsHost;
 
         if (!isHost)
@@ -74,6 +79,7 @@ public class AIController : MonoBehaviour
         }
         ChangeState(stateMachine.IdleState);
     }
+
     void OnDisable()
     {
         if (health)
