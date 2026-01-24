@@ -21,7 +21,7 @@ public class GroundedState : PlayerState
     {
         base.LogicUpdate();
 
-        if (player.Input.JumpTriggered) stateMachine.ChangeState(player.JumpState);
+        if (player.Input.JumpTriggered && player.AbilityManager.CanJump) stateMachine.ChangeState(player.JumpState);
         if (!player.CheckIfGrounded()) stateMachine.ChangeState(player.FallState);
     }
 }

@@ -30,7 +30,6 @@ public class PlayerController : MonoBehaviour
     public MoveState MoveState { get; private set; }
     public JumpState JumpState { get; private set; }
     public FallState FallState { get; private set; }
-    public FlyState FlyState { get; private set; }
     #endregion
 
     #region Unity Lifecycle
@@ -80,7 +79,6 @@ public class PlayerController : MonoBehaviour
         MoveState = new MoveState(this, StateMachine, "Move");
         JumpState = new JumpState(this, StateMachine, "Jump");
         FallState = new FallState(this, StateMachine, "Fall");
-        FlyState = new FlyState(this, StateMachine, "Fly");
     }
     #endregion
 

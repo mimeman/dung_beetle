@@ -48,8 +48,12 @@ namespace Dung.Data
             [Tooltip("점프 힘")]
             public float jumpForce = 5.0f;
 
+            [Tooltip("점프 쿨타임")]
+            public float jumpCooldown = 0.8f;
+
             [Tooltip("낙하 시 중력 배율 (1보다 크면 빠른 낙하)")]
             public float gravityMultiplier = 2.0f;
+
         }
 
         [System.Serializable]

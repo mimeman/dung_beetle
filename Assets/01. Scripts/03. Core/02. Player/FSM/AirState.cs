@@ -21,7 +21,6 @@ public class AirState : PlayerState
         base.LogicUpdate();
 
         CheckLanding();
-        CheckFlyTransition();
     }
     #endregion
 
@@ -41,21 +40,10 @@ public class AirState : PlayerState
     {
         if (player.CheckIfGrounded() && player.Rb.velocity.y <= 0.01f)
         {
+            player.AbilityManager.StartJumpCooldown();
             stateMachine.ChangeState(player.IdleState);
         }
     }
 
-    // 비행 전환 체크 (AbilityManager 통해서만 확인)
-    private void CheckFlyTransition()
-    {
-        // 이미 비행 중이면 체크 안함
-        if (player.AbilityManager.IsFlying) return;
-
-        // 점프 키 누름 + 비행 가능 상태
-        if (player.Input.IsJumpPressed && player.AbilityManager.CanFly)
-        {
-            stateMachine.ChangeState(player.FlyState);
-        }
-    }
     #endregion
 }
