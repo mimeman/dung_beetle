@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Linq;
 using Dung.Data;
@@ -8,7 +9,17 @@ using UnityEngine.AI;
 public interface IPlayerControllable
 {
     string Id { get; }
-}
+};
+
+enum Direction
+{
+    Up,
+    Down,
+    Left,
+    Right,
+    Forward,
+    Back
+};
 
 /// <summary>
 /// 
@@ -21,6 +32,8 @@ public class AnimalSensor : MonoBehaviour
 {
     #region Properties
     [Header("Sensor Settings")]
+    [Tooltip("감지할 방향")]
+    [SerializeField] private Direction sensorDirection;
     [Tooltip("감지할 대상의 Layer")]
     [SerializeField] private LayerMask targetMask;
     [Tooltip("감지할 대상 제외 Obstacle들의 Layer")]

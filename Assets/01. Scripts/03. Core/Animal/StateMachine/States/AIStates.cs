@@ -29,7 +29,7 @@ namespace AIStates
 
         public override BaseState<AIController> UpdateState(AIController animal)
         {
-            if (animal.sensor.IsOnSight)
+            if (!animal.Config.friendly && animal.sensor.IsOnSight)
             {   // Target 발견시 Trace상태로 변경
                 return animal.stateMachine.TraceState;
             }
@@ -60,7 +60,7 @@ namespace AIStates
         public override void EnterState(AIController animal)
         {
             Debug.Log($"{animal.name} Patrol State Entered");
-            if (animal.sensor.IsOnHeard)   // 무언가 들은게 있다면
+            if (!animal.Config.friendly && animal.sensor.IsOnHeard)   // 무언가 들은게 있다면
                 patrolDestination = animal.sensor.TargeLastPosition;
             else    // 아무것도 없다면 랜덤 좌표로 탐색
                 patrolDestination = animal.GetPatrolDestination();
@@ -120,18 +120,21 @@ namespace AIStates
 
         public override BaseState<AIController> UpdateState(AIController animal)
         {
-            if (!animal.Config.friendly || animal.attacked)
-            {   // 우호적이나 공격당했을때.
-                if (animal.GetDistanceToTarget() <= animal.Config.attackRange)
-                    return animal.stateMachine.AttackState;
-            }
-
             if (animal.target)
                 animal.MoveTo(animal.target.transform.position);
 
             // 목적지에 도달했으나, target의 센서에서 감지가 되지 않을때.
             if (!animal.sensor.IsOnSight && animal.arrivedAtDestination)
                 return animal.stateMachine.IdleState;
+
+            if (animal.GetDistanceToTarget() <= animal.Config.attackRange)
+            {
+                if (animal.Config.friendly)
+                    return animal.stateMachine.IdleState;
+                else
+                    return animal.stateMachine.AttackState;
+            }
+
             return this;
         }
     }

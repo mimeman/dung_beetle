@@ -41,7 +41,7 @@ public class NavMeshMovement : MonoBehaviour
         if (agent.enabled)
         {
             agent.speed = Mathf.MoveTowards(currentSpeed, targetSpeed, Time.deltaTime * rate);
-            animator.SetFloat(animationConfig.moveSpeedFloat, agent.velocity.magnitude);
+            if (animator) animator.SetFloat(animationConfig.moveSpeedFloat, agent.velocity.magnitude);
         }
         else
             SimulateLODMovement();

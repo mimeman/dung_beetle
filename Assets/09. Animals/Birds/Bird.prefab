@@ -1794,7 +1794,7 @@ MonoBehaviour:
   decelerationRate: 10
   groundLayer:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 129
 --- !u!114 &3902543833371143715
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1823,6 +1823,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2c42fdb1c3ee5480d8602e32032f66eb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  sensorDirection: 4
   targetMask:
     serializedVersion: 2
     m_Bits: 64
