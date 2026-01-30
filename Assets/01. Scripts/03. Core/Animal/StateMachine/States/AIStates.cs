@@ -31,11 +31,15 @@ namespace AIStates
         {
             if (!animal.Config.friendly && animal.sensor.IsOnSight)
             {   // Target 발견시 Trace상태로 변경
+                if ((BirdController)animal)
+                    return ((BirdStateMachine)animal.stateMachine).StalkingState;
                 return animal.stateMachine.TraceState;
             }
             timer += Time.deltaTime;
             if (timer >= idleTime)
             {
+                if ((BirdController)animal)
+                    return ((BirdStateMachine)animal.stateMachine).PatrolState;
                 return animal.stateMachine.PatrolState;
             }
             return this;

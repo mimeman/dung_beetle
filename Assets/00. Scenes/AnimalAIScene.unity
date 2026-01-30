@@ -845,6 +845,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Worm (11)
       objectReference: {fileID: 0}
+    - target: {fileID: 7320880304720109000, guid: 40c723b95cd7c4c92a295d2d9ec86fa5, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 7657731416732267132, guid: 40c723b95cd7c4c92a295d2d9ec86fa5, type: 3}
       propertyPath: m_LocalPosition.x
       value: 12.988
@@ -1035,6 +1039,10 @@ PrefabInstance:
     - target: {fileID: 7320880304720109000, guid: 40c723b95cd7c4c92a295d2d9ec86fa5, type: 3}
       propertyPath: m_Name
       value: Worm (3)
+      objectReference: {fileID: 0}
+    - target: {fileID: 7320880304720109000, guid: 40c723b95cd7c4c92a295d2d9ec86fa5, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7657731416732267132, guid: 40c723b95cd7c4c92a295d2d9ec86fa5, type: 3}
       propertyPath: m_LocalPosition.x
@@ -2231,9 +2239,25 @@ PrefabInstance:
       propertyPath: config
       value: 
       objectReference: {fileID: 11400000, guid: c512fcea219c940b29f5ba7b1f9e61b3, type: 2}
+    - target: {fileID: 2423474213713422192, guid: c761d26c2bb9a4081b2dbe246ed97d89, type: 3}
+      propertyPath: flying
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2423474213713422192, guid: c761d26c2bb9a4081b2dbe246ed97d89, type: 3}
+      propertyPath: animConfig
+      value: 
+      objectReference: {fileID: 11400000, guid: e9adf475a2db54ea3b6bb3f5536cc384, type: 2}
+    - target: {fileID: 3340594159385369977, guid: c761d26c2bb9a4081b2dbe246ed97d89, type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 3804181283991551879, guid: c761d26c2bb9a4081b2dbe246ed97d89, type: 3}
       propertyPath: sensorDirection
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4661684788990652404, guid: c761d26c2bb9a4081b2dbe246ed97d89, type: 3}
+      propertyPath: m_Enabled
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4661684788990652404, guid: c761d26c2bb9a4081b2dbe246ed97d89, type: 3}
       propertyPath: accelerationRate
@@ -2259,10 +2283,19 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 1
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 4661684788990652404, guid: c761d26c2bb9a4081b2dbe246ed97d89, type: 3}
+    - {fileID: 3340594159385369977, guid: c761d26c2bb9a4081b2dbe246ed97d89, type: 3}
+    - {fileID: 246701240252254208, guid: c761d26c2bb9a4081b2dbe246ed97d89, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 8609172565823328599, guid: c761d26c2bb9a4081b2dbe246ed97d89, type: 3}
+      insertIndex: 1
+      addedObject: {fileID: 1545740890}
+    - targetCorrespondingSourceObject: {fileID: 8609172565823328599, guid: c761d26c2bb9a4081b2dbe246ed97d89, type: 3}
+      insertIndex: 2
+      addedObject: {fileID: 1545740889}
   m_SourcePrefab: {fileID: 100100000, guid: c761d26c2bb9a4081b2dbe246ed97d89, type: 3}
 --- !u!1001 &290197804
 PrefabInstance:
@@ -3322,6 +3355,10 @@ PrefabInstance:
     - target: {fileID: 7320880304720109000, guid: 40c723b95cd7c4c92a295d2d9ec86fa5, type: 3}
       propertyPath: m_Name
       value: Worm (2)
+      objectReference: {fileID: 0}
+    - target: {fileID: 7320880304720109000, guid: 40c723b95cd7c4c92a295d2d9ec86fa5, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7657731416732267132, guid: 40c723b95cd7c4c92a295d2d9ec86fa5, type: 3}
       propertyPath: m_LocalPosition.x
@@ -5945,6 +5982,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Worm (4)
       objectReference: {fileID: 0}
+    - target: {fileID: 7320880304720109000, guid: 40c723b95cd7c4c92a295d2d9ec86fa5, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 7657731416732267132, guid: 40c723b95cd7c4c92a295d2d9ec86fa5, type: 3}
       propertyPath: m_LocalPosition.x
       value: 12.397
@@ -6075,6 +6116,10 @@ PrefabInstance:
     - target: {fileID: 7320880304720109000, guid: 40c723b95cd7c4c92a295d2d9ec86fa5, type: 3}
       propertyPath: m_Name
       value: Worm (13)
+      objectReference: {fileID: 0}
+    - target: {fileID: 7320880304720109000, guid: 40c723b95cd7c4c92a295d2d9ec86fa5, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7657731416732267132, guid: 40c723b95cd7c4c92a295d2d9ec86fa5, type: 3}
       propertyPath: m_LocalPosition.x
@@ -6732,6 +6777,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Worm (12)
       objectReference: {fileID: 0}
+    - target: {fileID: 7320880304720109000, guid: 40c723b95cd7c4c92a295d2d9ec86fa5, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 7657731416732267132, guid: 40c723b95cd7c4c92a295d2d9ec86fa5, type: 3}
       propertyPath: m_LocalPosition.x
       value: 13.041
@@ -7121,6 +7170,10 @@ PrefabInstance:
     - target: {fileID: 7320880304720109000, guid: 40c723b95cd7c4c92a295d2d9ec86fa5, type: 3}
       propertyPath: m_Name
       value: Worm (8)
+      objectReference: {fileID: 0}
+    - target: {fileID: 7320880304720109000, guid: 40c723b95cd7c4c92a295d2d9ec86fa5, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7657731416732267132, guid: 40c723b95cd7c4c92a295d2d9ec86fa5, type: 3}
       propertyPath: m_LocalPosition.x
@@ -9532,6 +9585,59 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 38335279662569219, guid: 34d3f526198dae440bb2ce6005d86055, type: 3}
   m_PrefabInstance: {fileID: 721289447}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &1545740879 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 8609172565823328599, guid: c761d26c2bb9a4081b2dbe246ed97d89, type: 3}
+  m_PrefabInstance: {fileID: 281437663}
+  m_PrefabAsset: {fileID: 0}
+--- !u!54 &1545740889
+Rigidbody:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1545740879}
+  serializedVersion: 4
+  m_Mass: 1
+  m_Drag: 0
+  m_AngularDrag: 0.05
+  m_CenterOfMass: {x: 0, y: 0, z: 0}
+  m_InertiaTensor: {x: 1, y: 1, z: 1}
+  m_InertiaRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ImplicitCom: 1
+  m_ImplicitTensor: 1
+  m_UseGravity: 0
+  m_IsKinematic: 1
+  m_Interpolate: 0
+  m_Constraints: 0
+  m_CollisionDetection: 3
+--- !u!135 &1545740890
+SphereCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1545740879}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Radius: 3
+  m_Center: {x: 0, y: 3, z: 0}
 --- !u!4 &1555206061 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 1493958779012619316, guid: b9de24523a11d714db3851b5f0f9d527, type: 3}
@@ -9791,6 +9897,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Worm (9)
       objectReference: {fileID: 0}
+    - target: {fileID: 7320880304720109000, guid: 40c723b95cd7c4c92a295d2d9ec86fa5, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 7657731416732267132, guid: 40c723b95cd7c4c92a295d2d9ec86fa5, type: 3}
       propertyPath: m_LocalPosition.x
       value: 12.841
@@ -9852,6 +9962,10 @@ PrefabInstance:
     - target: {fileID: 7320880304720109000, guid: 40c723b95cd7c4c92a295d2d9ec86fa5, type: 3}
       propertyPath: m_Name
       value: Worm (1)
+      objectReference: {fileID: 0}
+    - target: {fileID: 7320880304720109000, guid: 40c723b95cd7c4c92a295d2d9ec86fa5, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7657731416732267132, guid: 40c723b95cd7c4c92a295d2d9ec86fa5, type: 3}
       propertyPath: m_LocalPosition.x
@@ -10061,6 +10175,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Worm (7)
       objectReference: {fileID: 0}
+    - target: {fileID: 7320880304720109000, guid: 40c723b95cd7c4c92a295d2d9ec86fa5, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 7657731416732267132, guid: 40c723b95cd7c4c92a295d2d9ec86fa5, type: 3}
       propertyPath: m_LocalPosition.x
       value: 12.655
@@ -10127,6 +10245,10 @@ PrefabInstance:
     - target: {fileID: 7320880304720109000, guid: 40c723b95cd7c4c92a295d2d9ec86fa5, type: 3}
       propertyPath: m_Name
       value: Worm (6)
+      objectReference: {fileID: 0}
+    - target: {fileID: 7320880304720109000, guid: 40c723b95cd7c4c92a295d2d9ec86fa5, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7657731416732267132, guid: 40c723b95cd7c4c92a295d2d9ec86fa5, type: 3}
       propertyPath: m_LocalPosition.x
@@ -10204,6 +10326,10 @@ PrefabInstance:
     - target: {fileID: 7320880304720109000, guid: 40c723b95cd7c4c92a295d2d9ec86fa5, type: 3}
       propertyPath: m_Name
       value: Worm (5)
+      objectReference: {fileID: 0}
+    - target: {fileID: 7320880304720109000, guid: 40c723b95cd7c4c92a295d2d9ec86fa5, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7657731416732267132, guid: 40c723b95cd7c4c92a295d2d9ec86fa5, type: 3}
       propertyPath: m_LocalPosition.x
@@ -11639,6 +11765,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Worm (10)
       objectReference: {fileID: 0}
+    - target: {fileID: 7320880304720109000, guid: 40c723b95cd7c4c92a295d2d9ec86fa5, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 7657731416732267132, guid: 40c723b95cd7c4c92a295d2d9ec86fa5, type: 3}
       propertyPath: m_LocalPosition.x
       value: 12.909
@@ -12593,6 +12723,10 @@ PrefabInstance:
     - target: {fileID: 7320880304720109000, guid: 40c723b95cd7c4c92a295d2d9ec86fa5, type: 3}
       propertyPath: m_Name
       value: Worm
+      objectReference: {fileID: 0}
+    - target: {fileID: 7320880304720109000, guid: 40c723b95cd7c4c92a295d2d9ec86fa5, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7657731416732267132, guid: 40c723b95cd7c4c92a295d2d9ec86fa5, type: 3}
       propertyPath: m_LocalPosition.x

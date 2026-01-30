@@ -12,6 +12,7 @@ public class BirdController : AIController
     [SerializeField] private bool landing = true;
     [SerializeField] private bool onGround = true;
 
+    public new BirdStateMachine stateMachine;
     private float distanceToTarget = 0;
     private int flyAnimationHash;
     SphereCollider solidCollider;
@@ -20,8 +21,43 @@ public class BirdController : AIController
     void Start()
     {
         base.Initialize();
+        InitializeAnimationHashes();
         solidCollider = GetComponent<SphereCollider>();
         rigidbody = GetComponent<Rigidbody>();
+    }
+
+    void Update()
+    {
+        if (!isHost) return;
+        if (CurrentState == null || health.IsDead)
+            return;
+
+        // Target update
+        target = sensor.Target;
+
+        // 다음 State로 넘어가기 위한 state의 updateState 로직
+        BaseState<AIController> nextState = CurrentState.UpdateState(this);
+        if (nextState != CurrentState)
+            ChangeState(nextState);
+    }
+
+    public void MoveForward(float speed)
+    {
+        transform.Translate(Vector3.forward * speed * Time.deltaTime);
+    }
+
+    public void RotateTowards(Vector3 targetPos, float turnSpeed)
+    {
+        Vector3 direction = (targetPos - transform.position).normalized;
+        if (direction == Vector3.zero) return;
+
+        Quaternion lookRot = Quaternion.LookRotation(direction);
+        transform.rotation = Quaternion.Slerp(transform.rotation, lookRot, turnSpeed * Time.deltaTime);
+    }
+
+    public void MoveTo(Vector3 target)
+    {
+        StartCoroutine("FlyToTarget", target);
     }
 
     // 대상 위치로 날아가는 함수

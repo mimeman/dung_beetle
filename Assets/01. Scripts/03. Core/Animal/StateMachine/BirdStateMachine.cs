@@ -6,7 +6,7 @@ public class BirdStateMachine : AnimalStateMachine
 {
     [SerializeField] private bool isFlying;
 
-    private readonly Idle idleState = new Idle();
+    private readonly FlyIdle idleState = new FlyIdle();
     private readonly FlyPatrol flyPatrol = new FlyPatrol();
     private readonly FlyStalking flyStalking = new FlyStalking();
     private readonly FlyDive flyDive = new FlyDive();

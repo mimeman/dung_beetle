@@ -3,7 +3,7 @@ using Dung.Data;
 using UnityEngine;
 using UnityEngine.AI;
 
-[RequireComponent(typeof(NavMeshAgent), typeof(NavMeshMovement), typeof(AnimalSensor))]
+[RequireComponent(typeof(AnimalSensor))]
 public class AIController : MonoBehaviour
 {
     #region Properties
@@ -20,7 +20,7 @@ public class AIController : MonoBehaviour
     public BaseState<AIController> CurrentState { get; private set; }
     public BaseStateMachine stateMachine { get; private set; }
     public AnimalSensor sensor { get; private set; }
-    public GameObject target { get; private set; }
+    public GameObject target { get; protected set; }
     public bool attacked { get; private set; }
     public bool isAnyPlayerNear { get { return sensor.IsAnyPlayerNear; } }
     public bool arrivedAtDestination
@@ -35,10 +35,11 @@ public class AIController : MonoBehaviour
     }
 
     private NavMeshMovement movement;   // 추후 interface로 받기
-    private AnimalHealth health;
+    protected AnimalHealth health;
     private NavMeshAgent agent;
     private Vector3 currentDestination;
-    private bool isHost;
+    public void SetDestination(Vector3 dest) { currentDestination = dest; }
+    protected bool isHost;
     #endregion
 
     void Awake()
@@ -49,7 +50,8 @@ public class AIController : MonoBehaviour
         sensor = GetComponent<AnimalSensor>();
         agent = GetComponent<NavMeshAgent>();
 
-        agent.stoppingDistance = config.stoppingDistance;
+        if (agent)
+            agent.stoppingDistance = config.stoppingDistance;
 
         health.Initialize(config);
         InitializeAnimationHashes();
@@ -75,7 +77,8 @@ public class AIController : MonoBehaviour
             health.OnHit.AddListener(HandleHit);
             health.OnDeath.AddListener(HandleHit);
 
-            movement.SetUp(animator, animConfig);
+            if (movement)
+                movement.SetUp(animator, animConfig);
         }
         ChangeState(stateMachine.IdleState);
     }
@@ -101,11 +104,16 @@ public class AIController : MonoBehaviour
             ChangeState(nextState);
     }
 
-    void ChangeState(BaseState<AIController> newState)
+    protected void ChangeState(BaseState<AIController> newState)
     {
         CurrentState?.ExitState(this);
         CurrentState = newState;
         CurrentState?.EnterState(this);
+    }
+
+    public void Despawn()
+    {
+        Destroy(gameObject);
     }
 
     #region Movement
@@ -127,7 +135,8 @@ public class AIController : MonoBehaviour
     }
     public void StopMoving()
     {
-        movement.Stop();
+        if (movement)
+            movement.Stop();
     }
     public void LookAt(Vector3 target)
     {
@@ -223,7 +232,7 @@ public class AIController : MonoBehaviour
     public int hashPoo { get; private set; }
     public int hashSleep { get; private set; }
 
-    void InitializeAnimationHashes()
+    protected void InitializeAnimationHashes()
     {
         hashMoveSpeed = Animator.StringToHash(animConfig.moveSpeedFloat);
         hashIsWalking = Animator.StringToHash(animConfig.isWalkingBool);

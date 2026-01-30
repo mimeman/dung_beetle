@@ -261,6 +261,7 @@ public class AnimalSensor : MonoBehaviour
 
     void ActivateAI()
     {
+        if (!agent) return;
         if (!agent.enabled)
         {
             agent.enabled = true;
@@ -270,6 +271,7 @@ public class AnimalSensor : MonoBehaviour
 
     void DeactivateAI()
     {
+        if (!agent) return;
         if (agent.enabled)
             agent.enabled = false;
     }
