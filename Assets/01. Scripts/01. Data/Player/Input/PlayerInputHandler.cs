@@ -21,6 +21,8 @@ public class PlayerInputHandler : MonoBehaviour
 
     public bool SuppressGameplayInput { get; set; } = false;
 
+    public Vector3 MoveDirection => new Vector3(MoveInput.x, 0, MoveInput.y).normalized;
+
     private void OnEnable()
     {
         if (_inputReader == null) { Debug.LogError("InputReader가 연결되지 않았습니다!"); return; }

@@ -9,37 +9,18 @@ public class PlayerAbilityManager : MonoBehaviour
     // 점프 관련
     private float _jumpCooldownTimer;
 
-    // 비행 관련
-    private float _flyCooldownTimer;
-    private float _flyDurationTimer;
-    private bool _isFlying;
     #endregion
 
     #region Properties
     // 점프 가능 여부
     public bool CanJump => _jumpCooldownTimer <= 0f;
 
-    // 비행 가능 여부 (쿨타임 끝 + 비행 중 아님)
-    public bool CanFly => _flyCooldownTimer <= 0f && !_isFlying;
-
-    // 현재 비행 중인지
-    public bool IsFlying => _isFlying;
-
-    // 남은 비행 시간 (초)
-    public float FlyTimeRemaining => Mathf.Max(0, _stats.flight.maxDuration - _flyDurationTimer);
-
-    // 비행 쿨타임 진행도
-    public float CooldownProgress => _flyCooldownTimer / _stats.flight.cooldown;
     #endregion
 
     #region Initialization
     public void Initialize(PlayerStats stats)
     {
         _stats = stats;
-        _jumpCooldownTimer = 0f; // [추가] 점프 초기화
-        _flyCooldownTimer = 0f;
-        _flyDurationTimer = 0f;
-        _isFlying = false;
     }
     #endregion
 
@@ -78,8 +59,6 @@ public class PlayerAbilityManager : MonoBehaviour
     public void ResetCooldown()
     {
         _jumpCooldownTimer = 0f;
-        _flyCooldownTimer = 0f;
-        _isFlying = false;
         Debug.Log("모든 쿨타임 강제 리셋");
     }
     #endregion

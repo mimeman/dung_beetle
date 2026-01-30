@@ -10,7 +10,8 @@ public class DungBallController : MonoBehaviour, IDungInteractable, IGrowable
 
     [Header("Handlers")]
     private DungInteractionHandler _interactionHandler;
-    private DungPhysicsHandler _physicsHandler;
+    [SerializeField] private Transform _leftHandTarget;
+    [SerializeField] private Transform _rightHandTarget;
 
     private Rigidbody _rb;
     private float _currentMass;
@@ -53,7 +54,17 @@ public class DungBallController : MonoBehaviour, IDungInteractable, IGrowable
 
     public (Transform left, Transform right) GetIKTargets()
     {
-        return _interactionHandler.GetPushAnchors();
+        if (_leftHandTarget != null && _rightHandTarget != null)
+        {
+            Debug.Log("<color=green>[Dung]</color> 수동 IK 타겟 전달 중");
+            return (_leftHandTarget, _rightHandTarget);
+        }
+
+        Debug.Log("<color=orange>[Dung]</color> 수동 타겟 없음, 핸들러 확인 중...");
+        var anchors = _interactionHandler.GetPushAnchors();
+
+        if (anchors.left == null) Debug.LogWarning("<color=red>[Dung]</color> IK 타겟이 최종적으로 Null입니다!");
+        return anchors;
     }
 
     public Vector3 GetPosition() => transform.position;

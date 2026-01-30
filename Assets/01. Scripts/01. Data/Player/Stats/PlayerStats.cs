@@ -82,6 +82,9 @@ namespace Dung.Data
 
             [Tooltip("밀기 중 회전 속도")]
             public float pushRotationSpeed = 4.0f;
+
+            [Tooltip("공에 가해지는 물리적인 힘의 크기")]
+            public float pushForce = 25.0f;
         }
 
         [System.Serializable]
@@ -92,6 +95,13 @@ namespace Dung.Data
 
             [Tooltip("상호작용 가능 레이어")]
             public LayerMask interactLayer;
+
+            [Header("상호작용 범위 설정")]
+            [Tooltip("감지 사거리")]
+            public float detectRange = 1.5f;
+
+            [Tooltip("감지 너비 (SphereCast 반경)")]
+            public float detectRadius = 0.5f;
         }
     }
 }

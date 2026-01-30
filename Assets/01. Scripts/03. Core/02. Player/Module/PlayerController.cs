@@ -9,8 +9,10 @@
  */
 #endregion
 
-using UnityEngine;
 using Dung.Data;
+using RootMotion.FinalIK;
+using System.Collections;
+using UnityEngine;
 
 public class PlayerController : MonoBehaviour
 {
@@ -20,7 +22,10 @@ public class PlayerController : MonoBehaviour
     [field: SerializeField] public Rigidbody Rb { get; private set; }
     [field: SerializeField] public Transform CameraTransform { get; private set; }
     [field: SerializeField] public Animator Anim { get; private set; }
+    [field: SerializeField] public FullBodyBipedIK IKSolver { get; private set; }
 
+    public PlayerPhysicsHandler PhysicsHandler { get; private set; }
+    public PlayerDetector Detector { get; private set; }
     public PlayerAbilityManager AbilityManager { get; private set; }
     #endregion
 
@@ -30,6 +35,8 @@ public class PlayerController : MonoBehaviour
     public MoveState MoveState { get; private set; }
     public JumpState JumpState { get; private set; }
     public FallState FallState { get; private set; }
+
+    public PlayerPushState PushState { get; private set; }
     #endregion
 
     #region Unity Lifecycle
@@ -47,6 +54,11 @@ public class PlayerController : MonoBehaviour
     private void Update()
     {
         StateMachine.CurrentState.LogicUpdate();
+
+        if (Input.InteractTriggered)
+        {
+            HandleInteractionInput();
+        }
     }
 
     private void FixedUpdate()
@@ -58,17 +70,28 @@ public class PlayerController : MonoBehaviour
     #region Initialization
     private void InitializeComponents()
     {
-        // 카메라 자동 연결
         if (CameraTransform == null && Camera.main != null)
             CameraTransform = Camera.main.transform;
 
-        // Rigidbody 회전 제한
-        Rb.constraints = RigidbodyConstraints.FreezeRotationX |
-                        RigidbodyConstraints.FreezeRotationZ;
 
-        // 능력 관리자 초기화
+        if (Anim != null)
+        {
+            Anim.transform.localPosition = Vector3.zero;
+            Anim.transform.localRotation = Quaternion.identity;
+        }
+
+        if (Rb != null)
+        {
+            Rb.collisionDetectionMode = CollisionDetectionMode.Continuous;
+            Rb.interpolation = RigidbodyInterpolation.Interpolate;
+        }
+
         AbilityManager = gameObject.AddComponent<PlayerAbilityManager>();
         AbilityManager.Initialize(Stats);
+        PhysicsHandler = GetComponent<PlayerPhysicsHandler>();
+        Detector = GetComponentInChildren<PlayerDetector>();
+
+        if (Detector != null) Detector.Initialize(this);
     }
 
     private void InitializeStateMachine()
@@ -79,6 +102,31 @@ public class PlayerController : MonoBehaviour
         MoveState = new MoveState(this, StateMachine, "Move");
         JumpState = new JumpState(this, StateMachine, "Jump");
         FallState = new FallState(this, StateMachine, "Fall");
+
+        // PushState 인스턴스 생성 및 애니메이션 파라미터 등록
+        PushState = new PlayerPushState(this, StateMachine, "IsPushing");
+    }
+    #endregion
+
+    #region Interaction Logic
+    private void HandleInteractionInput()
+    {
+        Debug.Log("<color=yellow>[Controller]</color> E 키 입력 감지됨");
+
+        if (StateMachine.CurrentState == PushState)
+        {
+            Debug.Log("<color=yellow>[Controller]</color> 밀기 종료 -> Idle 상태로 변경");
+            StateMachine.ChangeState(IdleState);
+        }
+        else if (Detector.CurrentInteractable != null)
+        {
+            Debug.Log("<color=yellow>[Controller]</color> 밀기 시작 -> Push 상태로 변경");
+            StateMachine.ChangeState(PushState);
+        }
+        else
+        {
+            Debug.Log("<color=red>[Controller]</color> 앞에 감지된 공이 없어 전환 실패");
+        }
     }
     #endregion
 
@@ -133,6 +181,47 @@ public class PlayerController : MonoBehaviour
             Stats.detection.groundLayer
         );
     }
+
+    public void RotateTowards(Vector3 targetPosition, float rotationSpeed)
+    {
+        Vector3 dir = (targetPosition - transform.position).normalized;
+        dir.y = 0;
+        if (dir.sqrMagnitude > 0.01f)
+        {
+            transform.rotation = Quaternion.Slerp(
+                transform.rotation,
+                Quaternion.LookRotation(dir),
+                rotationSpeed * Time.deltaTime
+            );
+        }
+    }
+
+    public IEnumerator SetIKWeight(float targetWeight, float duration)
+    {
+        if (IKSolver == null) yield break;
+
+        float startWeight = IKSolver.solver.IKPositionWeight;
+        float elapsed = 0f;
+
+        while (elapsed < duration)
+        {
+            elapsed += Time.deltaTime;
+            float currentWeight = Mathf.Lerp(startWeight, targetWeight, elapsed / duration);
+
+            // 전체 솔버 가중치
+            IKSolver.solver.IKPositionWeight = currentWeight;
+
+            // 양손의 개별 가중치도 함께 올려줘야 손이 움직입니다!
+            IKSolver.solver.leftHandEffector.positionWeight = currentWeight;
+            IKSolver.solver.rightHandEffector.positionWeight = currentWeight;
+
+            yield return null;
+        }
+
+        IKSolver.solver.IKPositionWeight = targetWeight;
+        IKSolver.solver.leftHandEffector.positionWeight = targetWeight;
+        IKSolver.solver.rightHandEffector.positionWeight = targetWeight;
+    }
     #endregion
 
     #region Helper Methods
@@ -143,7 +232,6 @@ public class PlayerController : MonoBehaviour
         Vector3 forward = CameraTransform.forward;
         Vector3 right = CameraTransform.right;
 
-        // Y축 제거 (수평면만 사용)
         forward.y = 0;
         right.y = 0;
 

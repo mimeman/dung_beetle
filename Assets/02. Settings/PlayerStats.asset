@@ -18,19 +18,25 @@ MonoBehaviour:
     rotationSpeed: 12
     acceleration: 25
     deceleration: 20
-    speedSmoothTime: 0.1
-    rotationSmoothTime: 0.1
+  physics:
+    jumpForce: 5
+    jumpCooldown: 0.8
+    gravityMultiplier: 2
+  flight:
+    flyUpForce: 15
+    maxFlySpeed: 5
+    maxDuration: 1.5
+    cooldown: 10
   push:
     speedMultiplier: 0.7
     pushRotationSpeed: 4
-  physics:
-    jumpForce: 5
-    gravityMultiplier: 2
-    flyUpForce: 10
+    pushForce: 25
   detection:
     groundLayer:
       serializedVersion: 2
       m_Bits: 128
     interactLayer:
       serializedVersion: 2
-      m_Bits: 0
+      m_Bits: 256
+    detectRange: 1.5
+    detectRadius: 0.5
