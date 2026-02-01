@@ -18,18 +18,20 @@ MonoBehaviour:
   groundLayer:
     serializedVersion: 2
     m_Bits: 129
-  fovRange: 20
-  fovAngle: 270
+  fovRange: 50
+  fovAngle: 180
   fovHeight: 1.5
   soundRange: 10
   attackRange: 2
   stoppingDistance: 0.3
+  minHeight: 25
+  maxHeight: 50
   idleMinTime: 2
   idleMaxTime: 4
   patrolMinRadius: 10
   patrolMaxRadius: 10
-  walkSpeed: 10
-  runSpeed: 15
+  walkSpeed: 20
+  runSpeed: 30
   rotateSpeed: 30
   friendly: 0
   attackable: 1

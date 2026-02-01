@@ -19,6 +19,8 @@ namespace Dung.Data
         public float soundRange = 10f;
         public float attackRange = 2f;
         public float stoppingDistance = 1.5f;
+        public float minHeight = 100f;
+        public float maxHeight = 100f;
 
         [Header("State Machine Settings")]
         [Header("Idle")]

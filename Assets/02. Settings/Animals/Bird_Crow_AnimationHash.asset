@@ -20,7 +20,7 @@ MonoBehaviour:
   isWalkingBool: flying
   isRunningBool: flying
   actionTrigger1: peck
-  actionTrigger2: Attack2
+  actionTrigger2: landing
   actionTrigger3: Attack3
   actionTrigger4: Attack4
   hitTrigger1: GotHit1

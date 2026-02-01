@@ -7,8 +7,8 @@ namespace AnimalStates
         AnimalStateMachine animalStateMachine;
         public override void EnterState(AIController animal)
         {
-            animalStateMachine = animal.stateMachine as AnimalStateMachine;
-            animal.SetAnimBool(animal.hashEat, true);
+            animalStateMachine = animal.StateMachine as AnimalStateMachine;
+            animal.SetAnimBool(animal.HashEat, true);
         }
 
         public override void ExitState(AIController animal) { }
@@ -16,7 +16,7 @@ namespace AnimalStates
         public override BaseState<AIController> UpdateState(AIController animal)
         {
             if (animalStateMachine.hunger <= 80)
-                return animal.stateMachine.IdleState;
+                return animal.StateMachine.IdleState;
 
             animalStateMachine.hunger += Time.deltaTime;
             return this;

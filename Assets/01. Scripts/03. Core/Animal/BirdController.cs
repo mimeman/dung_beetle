@@ -21,7 +21,6 @@ public class BirdController : AIController
     void Start()
     {
         base.Initialize();
-        InitializeAnimationHashes();
         solidCollider = GetComponent<SphereCollider>();
         rigidbody = GetComponent<Rigidbody>();
     }
@@ -33,7 +32,7 @@ public class BirdController : AIController
             return;
 
         // Target update
-        target = sensor.Target;
+        Target = Sensor.Target;
 
         // 다음 State로 넘어가기 위한 state의 updateState 로직
         BaseState<AIController> nextState = CurrentState.UpdateState(this);
