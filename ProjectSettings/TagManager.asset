@@ -3,7 +3,13 @@
 --- !u!78 &1
 TagManager:
   serializedVersion: 2
-  tags: []
+  tags:
+  - lb_bird
+  - bird
+  - ant
+  - worm
+  - centi
+  - toad
   layers:
   - Default
   - TransparentFX
@@ -36,7 +42,7 @@ TagManager:
   - 
   - 
   - 
-  - 
+  - Animal
   m_SortingLayers:
   - name: Default
     uniqueID: 0
