@@ -321,7 +321,10 @@ namespace BirdStates
             if (bird.transform.position.y >= animal.Config.maxHeight - 1.0f)
             {
                 // 다시 순찰(Patrol) 또는 선회(Stalking)로 복귀
-                return ((BirdStateMachine)animal.StateMachine).StalkingState;
+                if (animal.Sensor.IsOnHeard || animal.Sensor.IsOnSight)
+                    return ((BirdStateMachine)animal.StateMachine).StalkingState;
+                else
+                    return ((BirdStateMachine)animal.StateMachine).PatrolState;
             }
 
             return this;
