@@ -30,7 +30,7 @@ MonoBehaviour:
   push:
     speedMultiplier: 0.7
     pushRotationSpeed: 4
-    pushForce: 25
+    pushForce: 10
   detection:
     groundLayer:
       serializedVersion: 2

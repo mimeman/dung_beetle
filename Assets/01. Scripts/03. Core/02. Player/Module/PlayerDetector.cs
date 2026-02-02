@@ -15,24 +15,39 @@ public class PlayerDetector : MonoBehaviour
     {
         if (_player == null) return;
 
-        // Stats에서 기획 수치를 실시간으로 가져옴
         float radius = _player.Stats.detection.detectRadius;
         float range = _player.Stats.detection.detectRange;
         LayerMask layer = _player.Stats.detection.interactLayer;
 
-        // SphereCast를 사용하여 너비가 있는 감지 수행
-        Ray ray = new Ray(transform.position + Vector3.up * 0.5f, transform.forward);
+        Vector3 origin = _player.transform.position + Vector3.up * 0.5f;
+        Vector3 direction = _player.transform.forward;
+        Ray ray = new Ray(origin, direction);
 
-        if (UnityEngine.Physics.SphereCast(ray, radius, out RaycastHit hit, range, layer))
+        if (Physics.SphereCast(ray, radius, out RaycastHit hit, range, layer))
         {
             if (hit.collider.TryGetComponent(out IDungInteractable dung))
             {
                 CurrentInteractable = dung;
-                Debug.Log("공 감지 성공");
                 return;
             }
         }
 
         CurrentInteractable = null;
+    }
+
+    private void OnDrawGizmosSelected()
+    {
+        if (_player == null) return;
+
+        float radius = _player.Stats.detection.detectRadius;
+        float range = _player.Stats.detection.detectRange;
+
+        Vector3 origin = _player.transform.position + Vector3.up * 0.5f;
+        Vector3 direction = _player.transform.forward;
+
+        Gizmos.color = Color.yellow;
+        Gizmos.DrawWireSphere(origin, radius);
+        Gizmos.DrawWireSphere(origin + direction * range, radius);
+        Gizmos.DrawLine(origin, origin + direction * range);
     }
 }

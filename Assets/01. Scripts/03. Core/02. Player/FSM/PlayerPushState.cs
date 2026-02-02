@@ -1,12 +1,16 @@
 ﻿using UnityEngine;
-using RootMotion.FinalIK;
 
 public class PlayerPushState : PlayerState
 {
     private IDungInteractable _targetDung;
-    private float _pushPower = 20f; // 미는 힘
+    private CapsuleCollider _playerCollider;
+    private Collider _ballCollider;
 
-    // 생성자: 부모 클래스의 규칙을 따름
+    private float _pushDistance = 1.2f;
+    private bool _isAttached = false;
+    private float _attachTimer = 0f;
+    private const float ATTACH_DURATION = 0.5f;
+
     public PlayerPushState(PlayerController player, StateMachine stateMachine, string animBoolName)
         : base(player, stateMachine, animBoolName) { }
 
@@ -14,55 +18,57 @@ public class PlayerPushState : PlayerState
     {
         base.Enter();
 
-        // 1. 공 감지 및 할당
         _targetDung = player.Detector.CurrentInteractable as IDungInteractable;
 
-        if (_targetDung != null)
+        if (_targetDung == null)
         {
-            // 2. 물리 컴포넌트 참조
-            SphereCollider ballCollider = _targetDung.GetTransform().GetComponent<SphereCollider>();
-            CapsuleCollider playerCollider = player.GetComponent<CapsuleCollider>();
-            Rigidbody ballRb = _targetDung.GetTransform().GetComponent<Rigidbody>();
-
-            // 3. 올라타기 방지 및 물리 연결
-            if (ballCollider != null && playerCollider != null)
-            {
-                Physics.IgnoreCollision(playerCollider, ballCollider, true);
-
-                // 공이 자고 있다면 즉시 깨워서 반응하게 함
-                if (ballRb != null && ballRb.IsSleeping()) ballRb.WakeUp();
-            }
-
-            // 4. 상호작용 알림
-            _targetDung.OnPushStart(player.gameObject);
-
-            // 5. IK 설정 및 초기화
-            var (leftHand, rightHand) = _targetDung.GetIKTargets();
-
-            if (leftHand != null && rightHand != null)
-            {
-                // 가중치 0에서 시작하도록 초기화 (부드러운 전환용)
-                player.IKSolver.solver.IKPositionWeight = 0f;
-                player.IKSolver.solver.leftHandEffector.positionWeight = 0f;
-                player.IKSolver.solver.rightHandEffector.positionWeight = 0f;
-
-                player.IKSolver.solver.leftHandEffector.target = leftHand;
-                player.IKSolver.solver.rightHandEffector.target = rightHand;
-
-                // 부드럽게 손 붙이기 시작
-                player.StartCoroutine(player.SetIKWeight(1.0f, 0.5f));
-            }
-        }
-        else
-        {
-            // 예외 처리: 공이 없으면 즉시 복귀
             stateMachine.ChangeState(player.IdleState);
+            return;
         }
+
+        // 거리 계산
+        if (_targetDung is DungBallController dungController)
+        {
+            _pushDistance = dungController.CurrentRadius + 0.8f;
+        }
+
+        SetupPhysics();
+
+        // 애니메이션 시작
+        player.Anim.SetTrigger("PushEnter");
+        player.Anim.SetBool("IsPushing", true);
+
+        _targetDung.OnPushStart(player.gameObject);
+
+        // Grounder 활성화 (다리가 땅에 붙음)
+        player.SetGrounderWeight(1f);
+
+        _isAttached = false;
+        _attachTimer = 0f;
     }
 
     public override void LogicUpdate()
     {
         base.LogicUpdate();
+
+        // 부착 대기
+        if (!_isAttached)
+        {
+            _attachTimer += Time.deltaTime;
+
+            if (_attachTimer >= ATTACH_DURATION)
+            {
+                _isAttached = true;
+            }
+
+            return;
+        }
+
+        // 밀기 속도 계산
+        Vector2 input = player.Input.MoveInput;
+        float pushSpeed = input.magnitude;
+
+        player.Anim.SetFloat("PushSpeed", pushSpeed);
     }
 
     public override void PhysicsUpdate()
@@ -70,26 +76,26 @@ public class PlayerPushState : PlayerState
         base.PhysicsUpdate();
         if (_targetDung == null) return;
 
-        float targetSpeed = player.Stats.movement.walkSpeed * player.Stats.push.speedMultiplier;
+        // 핵심: 플레이어를 공 뒤에 강제로 붙임
+        StickToTarget();
+
+        if (!_isAttached) return; // 부착 중에는 입력 무시
+
+        Vector2 input = player.Input.MoveInput;
+        if (input.sqrMagnitude < 0.01f) return;
+
+        Vector3 moveDir = player.GetCameraBasedDirection(input);
+
         float pushForce = player.Stats.push.pushForce;
         float rotSpeed = player.Stats.push.pushRotationSpeed;
 
-        Vector3 moveDir = player.Input.MoveDirection;
+        // 수평 방향으로만 (Y축 제거)
+        Vector3 horizontalDir = new Vector3(moveDir.x, 0, moveDir.z).normalized;
+        player.PhysicsHandler.AddPushForceToDung(_targetDung, horizontalDir, pushForce);
 
-        if (moveDir.sqrMagnitude > 0.01f)
-        {
-            // 1. 공에 물리 힘 전달 (Stats의 pushForce 사용)
-            player.PhysicsHandler.AddPushForceToDung(_targetDung, moveDir, pushForce);
-
-            // 2. 캐릭터 이동 (Stats의 감속된 속도 사용)
-            player.Move(targetSpeed);
-
-            // 3. 캐릭터 회전 (Stats의 pushRotationSpeed 사용)
-            RotateTowardsDung(rotSpeed);
-        }
+        // 공 방향으로 회전
+        RotateTowardsDung(rotSpeed);
     }
-
-
 
     public override void Exit()
     {
@@ -97,27 +103,78 @@ public class PlayerPushState : PlayerState
 
         if (_targetDung != null)
         {
-            Collider ballCollider = _targetDung.GetTransform().GetComponent<Collider>();
-            CapsuleCollider playerCollider = player.GetComponent<CapsuleCollider>();
-            if (ballCollider != null && playerCollider != null)
-            {
-                Physics.IgnoreCollision(playerCollider, ballCollider, false);
-            }
-
-            // 9. 쇠똥 점유 해제 및 IK 가중치 제거
+            CleanupPhysics();
             _targetDung.OnPushEnd(player.gameObject);
-            player.StartCoroutine(player.SetIKWeight(0f, 0.3f));
-
-            // 타겟 참조 초기화
-            player.IKSolver.solver.leftHandEffector.target = null;
-            player.IKSolver.solver.rightHandEffector.target = null;
         }
+
+        // 애니메이션 종료
+        player.Anim.SetTrigger("PushExit");
+        player.Anim.SetBool("IsPushing", false);
+        player.Anim.SetFloat("PushSpeed", 0f);
+
+        player.SetGrounderWeight(1f);
+
+        _targetDung = null;
+        _playerCollider = null;
+        _ballCollider = null;
+        _isAttached = false;
+    }
+
+    private void SetupPhysics()
+    {
+        _ballCollider = _targetDung.GetTransform().GetComponent<Collider>();
+        _playerCollider = player.GetComponent<CapsuleCollider>();
+
+        if (_ballCollider != null && _playerCollider != null)
+        {
+            // 충돌 무시 (플레이어가 공 위로 안 올라가게)
+            Physics.IgnoreCollision(_playerCollider, _ballCollider, true);
+        }
+
+        Rigidbody ballRb = _targetDung.GetTransform().GetComponent<Rigidbody>();
+        if (ballRb != null && ballRb.IsSleeping())
+        {
+            ballRb.WakeUp();
+        }
+    }
+
+    private void CleanupPhysics()
+    {
+        if (_ballCollider != null && _playerCollider != null)
+        {
+            Physics.IgnoreCollision(_playerCollider, _ballCollider, false);
+        }
+    }
+
+    // 핵심: 플레이어를 공 뒤에 딱 붙임
+    private void StickToTarget()
+    {
+        Vector3 dungPos = _targetDung.GetPosition();
+        Vector3 playerPos = player.transform.position;
+
+        // 공에서 플레이어로의 방향 (수평만)
+        Vector3 directionFromDung = (playerPos - dungPos).normalized;
+        directionFromDung.y = 0;
+
+        // 방향이 유효하지 않으면 플레이어의 반대 방향
+        if (directionFromDung.sqrMagnitude < 0.01f)
+        {
+            directionFromDung = -player.transform.forward;
+        }
+
+        // 목표 위치: 공 뒤쪽
+        Vector3 targetPosition = dungPos + directionFromDung * _pushDistance;
+        targetPosition.y = playerPos.y; // Y는 유지 (지면 위치)
+
+        // 강제로 위치 고정 (부드럽게)
+        player.Rb.MovePosition(Vector3.Lerp(playerPos, targetPosition, 0.9f));
     }
 
     private void RotateTowardsDung(float rotSpeed)
     {
         Vector3 dir = (_targetDung.GetPosition() - player.transform.position).normalized;
         dir.y = 0;
+
         if (dir.sqrMagnitude > 0.01f)
         {
             player.transform.rotation = Quaternion.Slerp(
