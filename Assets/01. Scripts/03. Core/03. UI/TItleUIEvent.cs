@@ -5,7 +5,7 @@ using UnityEngine.SceneManagement;
 
 public class TItleUIEvent : MonoBehaviour
 {
-    public string SceneName = null;
+    [SerializeField] private string SceneName = null;
     public void OnClick_btnNewGame()
     {
         Debug.Log("출력: " + SceneName + "씬 이동");
