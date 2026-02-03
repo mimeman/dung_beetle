@@ -116,7 +116,7 @@ public class AnimalSensor : MonoBehaviour
 
     #region Public Methods
     /// <summary>
-    /// 강제로 타겟을 설정합니다. (피격 시 호출)
+    /// 강제로 타겟을 설정합니다. (피격 시 호출) 
     /// </summary>
     public void ForceDetection(GameObject attacker)
     {
