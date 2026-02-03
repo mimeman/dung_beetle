@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -11,7 +11,7 @@ public class SessionManager : MonoBehaviour
     void Awake()
     {
         byte id = 1;
-        players.Add(id, GameObject.Find("PlayerTest"));
+        players.Add(id, GameObject.Find("Player_Model"));
         Debug.Log($"player {id} : {players[id]}");
     }
 
