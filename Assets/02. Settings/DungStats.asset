@@ -13,16 +13,16 @@ MonoBehaviour:
   m_Name: DungStats
   m_EditorClassIdentifier: 
   growth:
-    initialMass: 5
+    initialMass: 10
     maxMass: 1000
     absorptionRate: 1
     initialRadius: 0.5
     maxRadius: 3
   physics:
     weatherResistance: 0.2
-    impactResistance: 0.5
-    bounciness: 0.1
-    friction: 10
+    impactResistance: 1.5
+    bounciness: 0.5
+    friction: 15
     dungLayer:
       serializedVersion: 2
       m_Bits: 256

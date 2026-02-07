@@ -29,6 +29,9 @@ public class IdleState : GroundedState
     public override void PhysicsUpdate()
     {
         base.PhysicsUpdate();
-        player.Move(0f); 
+        player.Move(0f);
+        player.Anim.SetFloat("Horizontal", 0f);
+        player.Anim.SetFloat("Vertical", 0f);
+        player.Anim.SetFloat("Speed", 0f);
     }
 }

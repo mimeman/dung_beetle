@@ -30,10 +30,23 @@ public class MoveState : GroundedState
     {
         base.PhysicsUpdate();
 
-        float targetSpeed = player.Input.IsDashPressed
+        // 입력 받기
+        Vector2 input = player.Input.MoveInput;
+        bool isDashing = player.Input.IsDashPressed;
+
+        // 속도 계산
+        float targetSpeed = isDashing
             ? player.Stats.movement.runSpeed
             : player.Stats.movement.walkSpeed;
 
         player.Move(targetSpeed);
+
+        // ===== 핵심: Animator 파라미터 업데이트 =====
+        player.Anim.SetFloat("Horizontal", input.x);
+        player.Anim.SetFloat("Vertical", input.y);
+
+        // Speed로 Locomotion <-> Run 전환 제어
+        float normalizedSpeed = isDashing ? 1f : 0.5f;
+        player.Anim.SetFloat("Speed", normalizedSpeed);
     }
 }

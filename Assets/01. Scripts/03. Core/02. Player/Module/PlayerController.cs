@@ -127,9 +127,9 @@ public class PlayerController : MonoBehaviour
         // 땅 체크
         Anim.SetBool("IsGrounded", CheckIfGrounded());
 
-        float currentSpeed = Rb.velocity.magnitude;
+        /*float currentSpeed = Rb.velocity.magnitude;
         float normalizedSpeed = currentSpeed / Stats.movement.runSpeed;
-        Anim.SetFloat("Speed", normalizedSpeed);
+        Anim.SetFloat("Speed", normalizedSpeed);*/
     }
     #endregion
 
@@ -203,6 +203,14 @@ public class PlayerController : MonoBehaviour
         right.y = 0;
 
         return (forward.normalized * input.y + right.normalized * input.x).normalized;
+    }
+
+    public void SetIKWeight(float weight)
+    {
+        if (IKSolver != null)
+        {
+            IKSolver.solver.IKPositionWeight = weight;
+        }
     }
     #endregion
 }
