@@ -11,10 +11,10 @@ namespace ToadStates
         ToadController toad;
         public override void EnterState(AIController animal)
         {
+            Debug.Log($"{animal.name} entered Idle state");
             if (!toad)
                 toad = (ToadController)animal;
 
-            toad.Camouflage.SetCamouflage(true); // 위장 켜기
             toad.SetAnimTrigger(toad.HashIdle);  // 대기 애니메이션
         }
 
@@ -44,11 +44,11 @@ namespace ToadStates
 
         public override void EnterState(AIController animal)
         {
+            Debug.Log($"{animal.name} entered Aiming state");
             if (!toad)
                 toad = (ToadController)animal;
 
             timer = 0f;
-            toad.Camouflage.SetCamouflage(false); // 위장 해제 시작
             animal.SetAnimTrigger(toad.HashAim);    // 조준 애니메이션 (입 벌리기)
         }
 
@@ -87,6 +87,7 @@ namespace ToadStates
 
         public override void EnterState(AIController animal)
         {
+            Debug.Log($"{animal.name} entered Snap state");
             if (!toad)
                 toad = (ToadController)animal;
 
@@ -116,6 +117,7 @@ namespace ToadStates
         ToadController toad;
         public override void EnterState(AIController animal)
         {
+            Debug.Log($"{animal.name} entered Pull state");
             if (!toad)
                 toad = (ToadController)animal;
 
@@ -147,6 +149,7 @@ namespace ToadStates
 
         public override void EnterState(AIController animal)
         {
+            Debug.Log($"{animal.name} entered Bite state");
             timer = 0f;
             toad.SetAnimTrigger(toad.HashBite); // 씹는 애니메이션
 
@@ -187,6 +190,7 @@ namespace ToadStates
 
         public override void EnterState(AIController animal)
         {
+            Debug.Log($"{animal.name} entered Stuck state");
             if (!toad)
                 toad = (ToadController)animal;
 
@@ -224,6 +228,7 @@ namespace ToadStates
 
         public override void EnterState(AIController animal)
         {
+            Debug.Log($"{animal.name} entered Recover state");
             timer = 0f;
             animal.SetAnimTrigger(toad.HashRecover);
         }
@@ -252,6 +257,7 @@ namespace ToadStates
 
         public override void EnterState(AIController animal)
         {
+            Debug.Log($"{animal.name} entered Cooldown state");
             if (!toad)
                 toad = (ToadController)animal;
 

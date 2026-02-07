@@ -9,29 +9,41 @@ public class ToadController : AIController
     // 하위 시스템
     public ToadTongueController Tongue;
     public ToadPullSystem PullSystem;
-    public ToadCamouflageSystem Camouflage;
 
     // StateMachine 래퍼 (BaseState<ToadMonster>를 쓰기 위한 캐스팅 도우미) 
     public new ToadStateMachine StateMachine;
 
-    protected override void Awake()
+    new void Awake()
     {
         base.Awake();
-        // 컴포넌트 초기화
-        Tongue = GetComponent<ToadTongueController>();
-        PullSystem = GetComponent<ToadPullSystem>();
-        Camouflage = GetComponent<ToadCamouflageSystem>();
-
         // 하위 시스템 초기화 주입
         Tongue.Initialize(this);
         PullSystem.Initialize(this);
-        Camouflage.Initialize(this);
     }
 
-    protected override void Start()
+    new void Start()
     {
+        base.Start();
         // 상태 머신 시작 (Idle로 시작)
         ChangeState(StateMachine.IdleState);
+    }
+
+    new void Update()
+    {
+        if (!isHost) return;
+        if (CurrentState == null || health.IsDead)
+            return;
+
+        // Target update
+        if (Sensor.Target)
+            Target = Sensor.Target.transform;
+        else
+            Target = null;
+
+        // 다음 State로 넘어가기 위한 state의 updateState 로직
+        BaseState<AIController> nextState = CurrentState.UpdateState(this);
+        if (nextState != CurrentState)
+            ChangeState(nextState);
     }
 
     #region Movement
