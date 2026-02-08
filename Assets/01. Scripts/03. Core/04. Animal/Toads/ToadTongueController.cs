@@ -6,7 +6,7 @@ using UnityEngine;
 public class ToadTongueController : MonoBehaviour
 {
     private ToadController toad;
-    public GameObject tonguePrefab; // 혀 끝부분 프리팹 (Collider 포함)
+    [SerializeField] private GameObject tonguePrefab; // 혀 끝부분 프리팹 (Collider 포함)
     private GameObject _currentTongue;
     private bool _isFiring;
 

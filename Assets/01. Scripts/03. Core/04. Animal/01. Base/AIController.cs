@@ -89,6 +89,11 @@ public class AIController : MonoBehaviour
     protected virtual void Start()
     {
         Initialize();
+
+        if (movement)
+            movement.SetUp(config, animator, animConfig);
+
+        ChangeState(StateMachine.IdleState);
     }
 
     protected virtual void Update()
@@ -135,11 +140,6 @@ public class AIController : MonoBehaviour
         // Host/Single Player: 이벤트 등록 및 초기화
         health.OnHit.AddListener(HandleHit);
         health.OnDeath.AddListener(HandleDeath);
-
-        if (movement)
-            movement.SetUp(config, animator, animConfig);
-
-        ChangeState(StateMachine.IdleState);
     }
 
     private void InitializeAnimationHashes()
