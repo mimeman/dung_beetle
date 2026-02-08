@@ -10,8 +10,9 @@ namespace Dung.Data
         public float attackDamage = 10f;
         public float defense = 0f;
 
-        [Header("AI Settings")]
-        public LayerMask groundLayer;
+        [Header("AI Sensor Settings")]
+        public SensorTargetData targetSetting;
+        public LayerMask obstacleLayer;
         public float fovRange = 15f;
         [Range(0, 360)]
         public float fovAngle = 120f;
@@ -19,6 +20,9 @@ namespace Dung.Data
         public float soundRange = 10f;
         public float attackRange = 2f;
         public float stoppingDistance = 1.5f;
+        [Header("Walkable AI Settings")]
+        public LayerMask groundLayer;
+        [Header("Flyable AI Settings")]
         public float minHeight = 100f;
         public float maxHeight = 100f;
 
