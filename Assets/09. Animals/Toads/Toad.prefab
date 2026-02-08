@@ -147,7 +147,6 @@ GameObject:
   - component: {fileID: 1250042290575466550}
   - component: {fileID: 5678356038111942807}
   - component: {fileID: 7353782296028895278}
-  - component: {fileID: 7215261471358005735}
   m_Layer: 31
   m_Name: Toad_System
   m_TagString: Untagged
@@ -196,18 +195,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   mouthPoint: {fileID: 5715288646261996550}
---- !u!114 &7215261471358005735
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3665075146261343313}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1dd76af0c4ca9454e9433c09946cd988, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &8398730227562910291
 GameObject:
   m_ObjectHideFlags: 0
@@ -223,6 +210,7 @@ GameObject:
   - component: {fileID: 7259284181246644271}
   - component: {fileID: 4605734024948574551}
   - component: {fileID: 8879181915836876616}
+  - component: {fileID: 7636352498468281211}
   - component: {fileID: 550720713496364502}
   m_Layer: 31
   m_Name: Toad
@@ -346,9 +334,30 @@ MonoBehaviour:
   ToadConfig: {fileID: 11400000, guid: b3b28dafb1dad7745958acd0f074f11c, type: 2}
   Tongue: {fileID: 5678356038111942807}
   PullSystem: {fileID: 7353782296028895278}
-  Camouflage: {fileID: 7215261471358005735}
   StateMachine: {fileID: 550720713496364502}
 --- !u!114 &8879181915836876616
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8398730227562910291}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f8f77b202a1d44d8b834e592fdc3fe7e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  maxHealth: 0
+  defense: 0
+  currentHealth: 0
+  isDead: 0
+  OnHit:
+    m_PersistentCalls:
+      m_Calls: []
+  OnDeath:
+    m_PersistentCalls:
+      m_Calls: []
+--- !u!114 &7636352498468281211
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
