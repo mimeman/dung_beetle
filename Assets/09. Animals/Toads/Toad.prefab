@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 5715288646261996550}
   m_Layer: 0
-  m_Name: Mouth
+  m_Name: firePoint
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -76,7 +76,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9fcc3a8b7355242d7ba906cb20fc30e0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  tonguePrefab: {fileID: 0}
+  tonguePrefab: {fileID: 4600291276201151010, guid: 2eb543aed6d22e74f8fd18bd9272750a, type: 3}
+  firePoint: {fileID: 5715288646261996550}
 --- !u!114 &7353782296028895278
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -204,7 +205,7 @@ MonoBehaviour:
   rangeMultiplier: 1.5
   memoryDuration: 3
   sensorInterval: 0.2
-  enableDebug: 0
+  enableDebug: 1
   isOnSight: 0
   isOnHeard: 0
   isAnyPlayerNear: 0

@@ -149,6 +149,9 @@ namespace ToadStates
 
         public override void EnterState(AIController animal)
         {
+            if (!toad)
+                toad = (ToadController)animal;
+
             Debug.Log($"{animal.name} entered Bite state");
             timer = 0f;
             toad.SetAnimTrigger(toad.HashBite); // 씹는 애니메이션
@@ -229,6 +232,9 @@ namespace ToadStates
         public override void EnterState(AIController animal)
         {
             Debug.Log($"{animal.name} entered Recover state");
+            if (!toad)
+                toad = (ToadController)animal;
+
             timer = 0f;
             animal.SetAnimTrigger(toad.HashRecover);
         }

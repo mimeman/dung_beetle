@@ -9034,7 +9034,7 @@ GameObject:
   - component: {fileID: 1414616847}
   m_Layer: 8
   m_Name: Dung
-  m_TagString: Untagged
+  m_TagString: DungBall
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -13177,14 +13177,6 @@ PrefabInstance:
     - target: {fileID: 3522498641534634159, guid: 5d3fbe1049c6847648739668874f34fc, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 5678356038111942807, guid: 5d3fbe1049c6847648739668874f34fc, type: 3}
-      propertyPath: tonguePrefab
-      value: 
-      objectReference: {fileID: 4600291276201151010, guid: 2eb543aed6d22e74f8fd18bd9272750a, type: 3}
-    - target: {fileID: 7259284181246644271, guid: 5d3fbe1049c6847648739668874f34fc, type: 3}
-      propertyPath: enableDebug
-      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 8398730227562910291, guid: 5d3fbe1049c6847648739668874f34fc, type: 3}
       propertyPath: m_Name

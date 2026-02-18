@@ -2,11 +2,13 @@ using System.Collections;
 using System.Collections.Generic;
 using ToadStates;
 using UnityEngine;
+using UnityEngine.UIElements;
 
 public class ToadTongueController : MonoBehaviour
 {
     private ToadController toad;
     [SerializeField] private GameObject tonguePrefab; // 혀 끝부분 프리팹 (Collider 포함)
+    [SerializeField] private Transform firePoint;
     private GameObject _currentTongue;
     private bool _isFiring;
 
@@ -18,7 +20,7 @@ public class ToadTongueController : MonoBehaviour
         _isFiring = true;
 
         // 혀 생성 및 발사 (실제로는 오브젝트 풀링 권장)
-        _currentTongue = Instantiate(tonguePrefab, transform.position, transform.rotation);
+        _currentTongue = Instantiate(tonguePrefab, firePoint.position, transform.rotation);
         var tongueScript = _currentTongue.GetComponent<TongueProjectile>();
         tongueScript.Launch(toad.Target.position, toad.ToadConfig.tongueSpeed, this);
     }
@@ -28,19 +30,19 @@ public class ToadTongueController : MonoBehaviour
     {
         _isFiring = false;
 
-        if (other.CompareTag("Player"))
+        if (!other)
+        {
+            // 빗나감 -> 쿨다운
+            toad.ChangeState(new Cooldown());
+            ResetTongue();
+        }
+        else if (other.CompareTag("Player"))
         {
             toad.ChangeState(new Pull());
         }
         else if (other.CompareTag("DungBall")) // 쇠똥 공 태그 확인
         {
             toad.ChangeState(new Stuck());
-        }
-        else
-        {
-            // 빗나감 -> 쿨다운
-            toad.ChangeState(new Cooldown());
-            ResetTongue();
         }
     }
 

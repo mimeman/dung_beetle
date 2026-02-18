@@ -11,7 +11,7 @@ public class SessionManager : MonoBehaviour
     void Awake()
     {
         byte id = 1;
-        players.Add(id, GameObject.Find("Player_Model"));
+        players.Add(id, GameObject.Find("PlayerTest"));
         Debug.Log($"player {id} : {players[id]}");
     }
 
