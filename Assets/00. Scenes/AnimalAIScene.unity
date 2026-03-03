@@ -4107,7 +4107,7 @@ Transform:
   m_GameObject: {fileID: 684600366}
   serializedVersion: 2
   m_LocalRotation: {x: 0.2164396, y: -0, z: -0, w: 0.97629607}
-  m_LocalPosition: {x: 12.239086, y: 3.768882, z: -0.4737215}
+  m_LocalPosition: {x: 8.209086, y: 3.8568819, z: -3.0237741}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -4133,7 +4133,7 @@ MonoBehaviour:
   m_Priority: 10
   m_StandbyUpdate: 2
   m_LookAt: {fileID: 0}
-  m_Follow: {fileID: 0}
+  m_Follow: {fileID: 995934812}
   m_Lens:
     FieldOfView: 40
     OrthographicSize: 10
@@ -9262,7 +9262,7 @@ Transform:
   m_GameObject: {fileID: 1414616846}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 2.22, y: 1.07, z: 2.56}
+  m_LocalPosition: {x: 2.22, y: 1, z: 2.56}
   m_LocalScale: {x: 1.5, y: 1.5, z: 1.5}
   m_ConstrainProportionsScale: 1
   m_Children:
@@ -11187,7 +11187,7 @@ Transform:
   m_GameObject: {fileID: 1840510296}
   serializedVersion: 2
   m_LocalRotation: {x: 0.2164396, y: 0, z: 0, w: 0.97629607}
-  m_LocalPosition: {x: 12.239086, y: 3.768882, z: -0.4737215}
+  m_LocalPosition: {x: 8.209086, y: 3.8568819, z: -3.0237741}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -13763,13 +13763,41 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 5715288646261996550, guid: 5d3fbe1049c6847648739668874f34fc, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 1.788
+      objectReference: {fileID: 0}
+    - target: {fileID: 5715288646261996550, guid: 5d3fbe1049c6847648739668874f34fc, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0.407
+      objectReference: {fileID: 0}
+    - target: {fileID: 5715288646261996550, guid: 5d3fbe1049c6847648739668874f34fc, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5715288646261996550, guid: 5d3fbe1049c6847648739668874f34fc, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5715288646261996550, guid: 5d3fbe1049c6847648739668874f34fc, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6808399669162926906, guid: 5d3fbe1049c6847648739668874f34fc, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6808399669162926906, guid: 5d3fbe1049c6847648739668874f34fc, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6808399669162926906, guid: 5d3fbe1049c6847648739668874f34fc, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 8398730227562910291, guid: 5d3fbe1049c6847648739668874f34fc, type: 3}
       propertyPath: m_Name
       value: Toad
-      objectReference: {fileID: 0}
-    - target: {fileID: 8398730227562910291, guid: 5d3fbe1049c6847648739668874f34fc, type: 3}
-      propertyPath: m_IsActive
-      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

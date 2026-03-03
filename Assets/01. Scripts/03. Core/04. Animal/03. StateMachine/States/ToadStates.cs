@@ -124,7 +124,11 @@ namespace ToadStates
             animal.SetAnimTrigger(toad.HashPull); // 당기는 애니메이션
         }
 
-        public override void ExitState(AIController animal) { }
+        public override void ExitState(AIController animal)
+        {
+            // Pull 완료 시 혀 시각 효과 제거
+            toad.Tongue.ResetTongue();
+        }
 
         public override BaseState<AIController> UpdateState(AIController animal)
         {

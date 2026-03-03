@@ -9,6 +9,11 @@ public class TongueProjectile : MonoBehaviour
     private ToadTongueController controller;
     private bool hasHit = false;
 
+    /// <summary>
+    /// 히트된 대상의 Transform (LineRenderer 추적용)
+    /// </summary>
+    public Transform HitTarget { get; private set; }
+
     public void Launch(Vector3 targetPos, float speed, ToadTongueController controller)
     {
         this.targetPos = targetPos;
@@ -39,10 +44,14 @@ public class TongueProjectile : MonoBehaviour
         // 몬스터 자신과의 충돌 무시 (Layer 설정으로도 가능)
         if (other.gameObject == controller.gameObject) return;
 
-        hasHit = true;
-        controller.OnHit(other);
+        Debug.Log($"{other.name} hit");
 
-        // 충돌 시 혀 오브젝트는 유지하거나 부모를 타겟으로 변경하는 등 연출 필요
-        // 여기서는 간단히 컨트롤러에게 위임
+        hasHit = true;
+        HitTarget = other.transform;
+
+        // 혀 끝을 대상에 부착 → 당기기 중 LineRenderer가 자연스럽게 따라감
+        transform.SetParent(other.transform);
+
+        controller.OnHit(other);
     }
 }
