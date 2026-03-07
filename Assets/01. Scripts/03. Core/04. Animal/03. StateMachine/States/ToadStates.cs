@@ -35,7 +35,7 @@ namespace ToadStates
 
     // ==================================================================================
     // 2. Aiming (조준)
-    // - 위장 해제, 타겟 조준, 일정 시간 후 발사(Snap)
+    // - 타겟 조준, 일정 시간 후 발사(Snap)
     // ==================================================================================
     public class Aiming : BaseState<AIController>
     {
@@ -165,6 +165,7 @@ namespace ToadStates
             {
                 var health = animal.Target.GetComponent<IDamageable>();
                 if (health != null) health.TakeDamage(toad.ToadConfig.biteDamage);
+                Debug.Log($"{toad.ToadConfig.biteDamage} Damage 입힘.");
             }
         }
 
@@ -280,6 +281,8 @@ namespace ToadStates
 
         public override BaseState<AIController> UpdateState(AIController animal)
         {
+            toad.RotateTowardsTarget();
+
             timer += Time.deltaTime;
             if (timer >= toad.ToadConfig.cooldownTime)
             {

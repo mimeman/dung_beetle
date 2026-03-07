@@ -29,9 +29,11 @@ public class TongueProjectile : MonoBehaviour
         // 타겟 방향으로 이동
         transform.position = Vector3.MoveTowards(transform.position, targetPos, speed * Time.deltaTime);
 
-        if (Vector3.Distance(transform.position, targetPos) < 0.1f)
+        float distnace = Vector3.Distance(transform.position, targetPos);
+        if (distnace < 0.01f)
         {
             // 최대 사거리 도달 (충돌 없이) -> 빗나감 처리
+            Debug.Log($"{distnace} 최대 사거리 도달");
             controller.OnHit(null);
             Destroy(gameObject);
         }
@@ -41,10 +43,10 @@ public class TongueProjectile : MonoBehaviour
     {
         if (hasHit) return;
 
+        Debug.Log($"{other.name} hit");
+
         // 몬스터 자신과의 충돌 무시 (Layer 설정으로도 가능)
         if (other.gameObject == controller.gameObject) return;
-
-        Debug.Log($"{other.name} hit");
 
         hasHit = true;
         HitTarget = other.transform;

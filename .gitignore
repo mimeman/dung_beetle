@@ -78,3 +78,5 @@ crashlytics-build.properties
 Assets/HotReload/
 Packages/com.singularitygroup.hotreload/*
 
+Assets/StylizedNatureBundle/Textures/T_SNB_Skybox_01.tga
+Assets/StylizedNatureBundle/Textures/T_SNB_Skybox_02.tga

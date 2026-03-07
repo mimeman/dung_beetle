@@ -63,7 +63,7 @@ public class ToadTongueController : MonoBehaviour
         // 혀 끝 생성 및 발사
         _currentTongue = Instantiate(tonguePrefab, firePoint.position, transform.rotation);
         _currentProjectile = _currentTongue.GetComponent<TongueProjectile>();
-        _currentProjectile.Launch(toad.Target.position, toad.ToadConfig.tongueSpeed, this);
+        _currentProjectile.Launch(toad.Target.position + new Vector3(0, 0.5f, 0), toad.ToadConfig.tongueSpeed, this);
 
         // LineRenderer 활성화
         lineRenderer.positionCount = tongueSegments;
@@ -136,6 +136,11 @@ public class ToadTongueController : MonoBehaviour
         {
             // DungBall 히트 → Stuck 상태 (LineRenderer 유지)
             toad.ChangeState(new Stuck());
+        }
+        else
+        {
+            toad.ChangeState(new Idle());
+            ResetTongue();
         }
     }
 
