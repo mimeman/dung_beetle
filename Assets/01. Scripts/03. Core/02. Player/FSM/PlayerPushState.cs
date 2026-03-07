@@ -17,7 +17,7 @@ public class PlayerPushState : PlayerState
     private float _pushDistance = 1.2f;
     private bool _isAttached = false;
     private float _attachTimer = 0f;
-    private const float ATTACH_DURATION = 0.5f;
+    private const float ATTACH_DURATION = 0.1f;
     private const float ROTATION_DURATION = 0.3f;
 
     private bool _isRotating = false;
@@ -26,7 +26,7 @@ public class PlayerPushState : PlayerState
     private Quaternion _targetRotation;
 
     private float _ikWeightTimer = 0f;
-    private const float IK_BLEND_DURATION = 1.0f;
+    private const float IK_BLEND_DURATION = 0.1f;
     private float _currentIKWeight = 0f;
 
     private float _walkCycleTimer = 0f;
@@ -47,73 +47,62 @@ public class PlayerPushState : PlayerState
     public override void Enter()
     {
         base.Enter();
-
         _targetDung = player.Detector.CurrentInteractable as IDungInteractable;
         if (_targetDung == null)
         {
             stateMachine.ChangeState(player.IdleState);
             return;
         }
-
         _ikSolver = player.IKSolver;
         InitializeIKTargets();
-
         if (_targetDung is DungBallController dungController)
         {
             _pushDistance = dungController.CurrentRadius + 0.8f;
         }
-
         SetupPhysics();
-
         player.Anim.SetTrigger("PushEnter");
         player.Anim.SetBool("IsPushing", true);
         _targetDung.OnPushStart(player.gameObject);
-
         player.SetGrounderWeight(1f);
-
         _isRotating = true;
         _rotationTimer = 0f;
         _startRotation = player.transform.rotation;
         Vector3 toDung = (_targetDung.GetPosition() - player.transform.position).normalized;
         _targetRotation = Quaternion.LookRotation(-toDung);
-
+        _ikSolver.enabled = false;
         _isAttached = false;
         _attachTimer = 0f;
-
         _ikWeightTimer = 0f;
         _currentIKWeight = 0f;
         _walkCycleTimer = 0f;
-
         _isExiting = false;
         _exitTimer = 0f;
+        SnapIKTargetsToCurrentBones();
     }
 
     public override void LogicUpdate()
     {
         base.LogicUpdate();
-
         // Exit 처리 중
         if (_isExiting)
         {
             HandleExit();
             return;
         }
-
         // 회전 중
         if (_isRotating)
         {
             _rotationTimer += Time.deltaTime;
             float t = _rotationTimer / ROTATION_DURATION;
-
             player.transform.rotation = Quaternion.Slerp(_startRotation, _targetRotation, t);
-
             if (t >= 1f)
             {
                 _isRotating = false;
+                SnapIKTargetsToCurrentBones();
+                _ikSolver.enabled = true;
             }
             return;
         }
-
         // 부착 대기
         if (!_isAttached)
         {
@@ -125,7 +114,6 @@ public class PlayerPushState : PlayerState
             }
             return;
         }
-
         // IK Weight 부드럽게 증가
         if (_currentIKWeight < 1f)
         {
@@ -133,16 +121,13 @@ public class PlayerPushState : PlayerState
             _currentIKWeight = Mathf.Clamp01(_ikWeightTimer / IK_BLEND_DURATION);
             UpdateIKWeight(_currentIKWeight);
         }
-
         Vector2 input = player.Input.MoveInput;
         if (input.sqrMagnitude > 0.01f)
         {
             _walkCycleTimer += Time.deltaTime * 2f;
         }
-
         float pushSpeed = input.magnitude;
         player.Anim.SetFloat("PushSpeed", pushSpeed);
-
         UpdateIKTargetsWithWalking();
     }
 
@@ -273,6 +258,22 @@ public class PlayerPushState : PlayerState
         if (_rightBackLegTarget == null) Debug.LogError("RightBackLegTarget not found!");
         if (_leftFrontLegTarget == null) Debug.LogError("LeftFrontLegTarget not found!");
         if (_rightFrontLegTarget == null) Debug.LogError("RightFrontLegTarget not found!");
+    }
+
+    private void SnapIKTargetsToCurrentBones()
+    {
+        if (_ikSolver == null) return;
+
+        TrySnapTarget(_leftBackLegTarget, _ikSolver.solver.leftFootEffector.bone?.transform);
+        TrySnapTarget(_rightBackLegTarget, _ikSolver.solver.rightFootEffector.bone?.transform);
+        TrySnapTarget(_leftFrontLegTarget, _ikSolver.solver.leftHandEffector.bone?.transform);
+        TrySnapTarget(_rightFrontLegTarget, _ikSolver.solver.rightHandEffector.bone?.transform);
+    }
+
+    private void TrySnapTarget(Transform target, Transform bone)
+    {
+        if (target != null && bone != null)
+            target.position = bone.position;
     }
 
     private void EnableIK()
