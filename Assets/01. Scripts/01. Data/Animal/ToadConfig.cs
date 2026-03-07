@@ -19,4 +19,9 @@ public class ToadConfig : ScriptableObject
 
     [Header("Camouflage")]
     public float camouflageFadeTime = 1.5f; // 위장 해제 속도
+
+    [Header("Tongue Visual")]
+    public float tongueWidth = 0.15f;          // 혀 두께
+    public Color tongueColor = new Color(0.85f, 0.3f, 0.4f); // 혀 색상 (분홍)
+    public float tongueRetractSpeed = 15f;     // 혀 수축 속도
 }

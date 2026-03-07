@@ -7,13 +7,13 @@ public class BirdController : AIController
     public new BirdStateMachine StateMachine;
     Rigidbody rigidbody;
 
-    void Start()
+    new void Start()
     {
-        base.Start();
+        Initialize();
         rigidbody = GetComponent<Rigidbody>();
     }
 
-    void Update()
+    new void Update()
     {
         if (!isHost) return;
         if (CurrentState == null || health.IsDead)

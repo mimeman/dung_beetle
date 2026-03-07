@@ -23,7 +23,7 @@ public class ToadController : AIController
 
     new void Start()
     {
-        base.Start();
+        Initialize();
         // 상태 머신 시작 (Idle로 시작)
         ChangeState(StateMachine.IdleState);
     }

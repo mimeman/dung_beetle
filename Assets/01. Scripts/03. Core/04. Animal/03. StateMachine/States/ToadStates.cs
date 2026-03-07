@@ -35,7 +35,7 @@ namespace ToadStates
 
     // ==================================================================================
     // 2. Aiming (조준)
-    // - 위장 해제, 타겟 조준, 일정 시간 후 발사(Snap)
+    // - 타겟 조준, 일정 시간 후 발사(Snap)
     // ==================================================================================
     public class Aiming : BaseState<AIController>
     {
@@ -124,7 +124,11 @@ namespace ToadStates
             animal.SetAnimTrigger(toad.HashPull); // 당기는 애니메이션
         }
 
-        public override void ExitState(AIController animal) { }
+        public override void ExitState(AIController animal)
+        {
+            // Pull 완료 시 혀 시각 효과 제거
+            toad.Tongue.ResetTongue();
+        }
 
         public override BaseState<AIController> UpdateState(AIController animal)
         {
@@ -149,6 +153,9 @@ namespace ToadStates
 
         public override void EnterState(AIController animal)
         {
+            if (!toad)
+                toad = (ToadController)animal;
+
             Debug.Log($"{animal.name} entered Bite state");
             timer = 0f;
             toad.SetAnimTrigger(toad.HashBite); // 씹는 애니메이션
@@ -158,6 +165,7 @@ namespace ToadStates
             {
                 var health = animal.Target.GetComponent<IDamageable>();
                 if (health != null) health.TakeDamage(toad.ToadConfig.biteDamage);
+                Debug.Log($"{toad.ToadConfig.biteDamage} Damage 입힘.");
             }
         }
 
@@ -229,6 +237,9 @@ namespace ToadStates
         public override void EnterState(AIController animal)
         {
             Debug.Log($"{animal.name} entered Recover state");
+            if (!toad)
+                toad = (ToadController)animal;
+
             timer = 0f;
             animal.SetAnimTrigger(toad.HashRecover);
         }
@@ -270,6 +281,8 @@ namespace ToadStates
 
         public override BaseState<AIController> UpdateState(AIController animal)
         {
+            toad.RotateTowardsTarget();
+
             timer += Time.deltaTime;
             if (timer >= toad.ToadConfig.cooldownTime)
             {

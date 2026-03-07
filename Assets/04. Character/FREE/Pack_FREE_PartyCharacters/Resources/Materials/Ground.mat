@@ -11,7 +11,8 @@ Material:
   m_Shader: {fileID: 4800000, guid: 933532a4fcc9baf4fa0491de14d08ed7, type: 3}
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
-  m_ValidKeywords: []
+  m_ValidKeywords:
+  - _ENVIRONMENTREFLECTIONS_OFF
   m_InvalidKeywords:
   - _GLOSSYREFLECTIONS_OFF
   m_LightmapFlags: 4
@@ -164,7 +165,7 @@ Material:
     - _ZWrite: 1
     m_Colors:
     - _BaseColor: {r: 0.30980387, g: 0.19999993, b: 0.5647059, a: 1}
-    - _Color: {r: 0.3098039, g: 0.19999996, b: 0.5647059, a: 1}
+    - _Color: {r: 0.30980384, g: 0.1999999, b: 0.5647059, a: 1}
     - _ColorDim: {r: 0.6415094, g: 0.6415094, b: 0.6415094, a: 1}
     - _ColorDimCurve: {r: 0.85023, g: 0.85034, b: 0.8504499, a: 0.85056}
     - _ColorDimExtra: {r: 0.3962264, g: 0.3962264, b: 0.3962264, a: 1}

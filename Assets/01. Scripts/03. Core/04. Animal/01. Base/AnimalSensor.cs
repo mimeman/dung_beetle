@@ -12,7 +12,7 @@ public class AnimalSensor : MonoBehaviour
 {
     #region Constants
     private const float DEFAULT_RANGE_MULTIPLIER = 1.5f;
-    private const float DEFAULT_MEMORY_DURATION = 3.0f;
+    private const float DEFAULT_MEMORY_DURATION = 30f;
     private const float DEFAULT_SENSOR_INTERVAL = 0.2f;
     private const float DEFAULT_ACTIVE_INTERVAL = 0.5f;
     private const float DEFAULT_ACTIVE_RADIUS_SQ = 3000f;
