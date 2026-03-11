@@ -49,7 +49,7 @@ namespace ToadStates
                 toad = (ToadController)animal;
 
             timer = 0f;
-            animal.SetAnimTrigger(toad.HashAim);    // 조준 애니메이션 (입 벌리기)
+            // animal.SetAnimTrigger(toad.HashAim);    // 조준 애니메이션 (입 벌리기)
         }
 
         public override void ExitState(AIController animal) { }
