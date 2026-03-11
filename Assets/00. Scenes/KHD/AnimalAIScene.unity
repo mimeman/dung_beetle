@@ -1836,15 +1836,15 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 668921620108779318, guid: c761d26c2bb9a4081b2dbe246ed97d89, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 22.16
+      value: -1
       objectReference: {fileID: 0}
     - target: {fileID: 668921620108779318, guid: c761d26c2bb9a4081b2dbe246ed97d89, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 25
+      value: 15
       objectReference: {fileID: 0}
     - target: {fileID: 668921620108779318, guid: c761d26c2bb9a4081b2dbe246ed97d89, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 8.12
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 668921620108779318, guid: c761d26c2bb9a4081b2dbe246ed97d89, type: 3}
       propertyPath: m_LocalRotation.w
@@ -10866,7 +10866,6 @@ GameObject:
   m_Component:
   - component: {fileID: 1953601133}
   - component: {fileID: 1953601132}
-  - component: {fileID: 1953601134}
   m_Layer: 0
   m_Name: NavMesh Surface
   m_TagString: Untagged
@@ -10920,18 +10919,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1953601134
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1953601131}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f410fa750c00e45e2997cad01dac5c05, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1001 &1956602302
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -12896,6 +12883,10 @@ PrefabInstance:
     - target: {fileID: 625720738312856893, guid: 40c723b95cd7c4c92a295d2d9ec86fa5, type: 3}
       propertyPath: m_Name
       value: Worm
+      objectReference: {fileID: 0}
+    - target: {fileID: 625720738312856893, guid: 40c723b95cd7c4c92a295d2d9ec86fa5, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8774407402931764888, guid: 40c723b95cd7c4c92a295d2d9ec86fa5, type: 3}
       propertyPath: m_LocalPosition.x

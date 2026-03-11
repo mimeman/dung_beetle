@@ -11,5 +11,11 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/00. Scenes/KHD/DialogueScene.unity
     guid: e9017d5f96b9f09489b4b37e1d6eb914
+  - enabled: 1
+    path: Assets/00. Scenes/KHD/AnimalAIScene.unity
+    guid: d5fd87fde289f4a2f87ab8f4c65994e7
+  - enabled: 1
+    path: Assets/00. Scenes/KHD/Demo.unity
+    guid: 4e961bebcae46414e9705f0d7c9aea10
   m_configObjects:
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 771d770bca76c4143a116d46fda23b95, type: 3}

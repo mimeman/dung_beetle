@@ -20487,6 +20487,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 40bc4e3a89df042cba9fd274325fd305, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  mainScene: AnimalAIScene
 --- !u!1001 &634274965
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -28323,7 +28324,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 224413972544493284, guid: bdb8f55c79de3ce429e354b19dc74938, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: -504.55334
+      value: -505
       objectReference: {fileID: 0}
     - target: {fileID: 224491534508797344, guid: bdb8f55c79de3ce429e354b19dc74938, type: 3}
       propertyPath: m_AnchorMax.y

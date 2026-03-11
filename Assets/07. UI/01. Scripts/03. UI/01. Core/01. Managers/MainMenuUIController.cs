@@ -5,6 +5,7 @@ using UnityEngine.SceneManagement;
 
 public class MainMenuUIController : MonoBehaviour
 {
+    [SerializeField] private string mainScene;
     void Start()
     {
 
@@ -17,7 +18,7 @@ public class MainMenuUIController : MonoBehaviour
 
     public void NewGameStart()
     {
-        SceneManager.LoadScene("DialogueScene");
+        SceneManager.LoadScene(mainScene);
     }
 
     public void ApplicationQuit()
