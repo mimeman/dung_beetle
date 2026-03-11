@@ -1,0 +1,88 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e63e8b45ea935344e92948ea166bede2, type: 3}
+  m_Name: NPC_1004
+  m_EditorClassIdentifier: 
+  NPC_ID: 1004
+  NPC_Name: 
+  StageName: Main
+  Interactions:
+  - NPC_ID: 1004
+    Name: 
+    Stage: Main
+    Group_ID: Info
+    Situation: 
+    Step: 10
+    Current_Text: "\uC815\uBCF4\uAC00 \uD544\uC694\uD55C\uAC00?"
+    Next_Step: 11
+    Branch_ID: 
+    Ani_Text: Normal
+    Ani_Tag: Smile
+    Highlight_Keyword: 
+    Highlight_Color: 
+    Icon_Name: 
+    Linked_Branches: []
+  - NPC_ID: 1004
+    Name: 
+    Stage: Main
+    Group_ID: Info
+    Situation: 
+    Step: 11
+    Current_Text: "\uB3C8\uB9CC \uB0B4\uBA74 \uBB50\uB4E0 \uC54C\uB824\uC8FC\uC9C0."
+    Next_Step: 0
+    Branch_ID: B_Info_Ask
+    Ani_Text: Normal
+    Ani_Tag: Talk
+    Highlight_Keyword: 
+    Highlight_Color: 
+    Icon_Name: 
+    Linked_Branches:
+    - Branch_ID: B_Info_Ask
+      Stage: Main
+      Target_Step: 100
+      Button_Text: "\uC54C\uB824\uC918."
+    - Branch_ID: B_Info_Ask
+      Stage: Main
+      Target_Step: 200
+      Button_Text: "\uC774\uC81C \uB410\uC5B4."
+  - NPC_ID: 1004
+    Name: 
+    Stage: Main
+    Group_ID: Info
+    Situation: 
+    Step: 100
+    Current_Text: "\uBD81\uCABD\uC5D0 \uB3C4\uC801\uC774 \uC788\uB2E4\uB294 \uC18C\uBB38\uC774
+      \uC788\uC5B4."
+    Next_Step: 11
+    Branch_ID: 
+    Ani_Text: Normal
+    Ani_Tag: Point
+    Highlight_Keyword: 
+    Highlight_Color: 
+    Icon_Name: 
+    Linked_Branches: []
+  - NPC_ID: 1004
+    Name: 
+    Stage: Main
+    Group_ID: Info
+    Situation: 
+    Step: 200
+    Current_Text: ...
+    Next_Step: 0
+    Branch_ID: 
+    Ani_Text: Normal
+    Ani_Tag: Idle
+    Highlight_Keyword: 
+    Highlight_Color: 
+    Icon_Name: 
+    Linked_Branches: []
+  Barks: []

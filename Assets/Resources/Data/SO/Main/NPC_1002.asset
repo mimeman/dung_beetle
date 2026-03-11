@@ -1,0 +1,72 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e63e8b45ea935344e92948ea166bede2, type: 3}
+  m_Name: NPC_1002
+  m_EditorClassIdentifier: 
+  NPC_ID: 1002
+  NPC_Name: "\uBC15\uC608\uD615"
+  StageName: Main
+  Interactions:
+  - NPC_ID: 1002
+    Name: "\uBC15\uC608\uD615"
+    Stage: Main
+    Group_ID: Shop
+    Situation: 
+    Step: 10
+    Current_Text: "\uC5B4\uC11C \uC635\uC1FC! \uBB3C\uAC74 \uC2F1\uC2F1\uD574!"
+    Next_Step: 0
+    Branch_ID: B_Shop_Main
+    Ani_Text: Normal
+    Ani_Tag: Talk
+    Highlight_Keyword: 
+    Highlight_Color: 
+    Icon_Name: 
+    Linked_Branches:
+    - Branch_ID: B_Shop_Main
+      Stage: Main
+      Target_Step: 100
+      Button_Text: "\uBB3C\uAC74\uC744 \uC0B4\uAC8C."
+    - Branch_ID: B_Shop_Main
+      Stage: Main
+      Target_Step: 200
+      Button_Text: "\uC548 \uC0AC\uC694."
+  - NPC_ID: 1002
+    Name: "\uBC15\uC608\uD615"
+    Stage: Main
+    Group_ID: Shop
+    Situation: 
+    Step: 100
+    Current_Text: "(\uAD6C\uB9E4) \uD0C1\uC6D4\uD55C \uC120\uD0DD\uC774\uC57C."
+    Next_Step: 0
+    Branch_ID: 
+    Ani_Text: Normal
+    Ani_Tag: good
+    Highlight_Keyword: 
+    Highlight_Color: 
+    Icon_Name: 
+    Linked_Branches: []
+  - NPC_ID: 1002
+    Name: "\uBC15\uC608\uD615"
+    Stage: Main
+    Group_ID: Shop
+    Situation: 
+    Step: 200
+    Current_Text: "(\uB098\uAC00\uAE30) \uB610 \uC624\uC288."
+    Next_Step: 0
+    Branch_ID: 
+    Ani_Text: Normal
+    Ani_Tag: bye
+    Highlight_Keyword: 
+    Highlight_Color: 
+    Icon_Name: 
+    Linked_Branches: []
+  Barks: []

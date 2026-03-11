@@ -10,6 +10,7 @@ public class BirdController : AIController
     new void Start()
     {
         Initialize();
+        ChangeState(StateMachine.IdleState);
         rigidbody = GetComponent<Rigidbody>();
     }
 

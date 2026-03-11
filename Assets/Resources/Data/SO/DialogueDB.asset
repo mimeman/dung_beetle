@@ -1,0 +1,22 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d766b24e948b9b0479ee3c372b7f5edb, type: 3}
+  m_Name: DialogueDB
+  m_EditorClassIdentifier: 
+  StageList:
+  - Global
+  - Main
+  _npcIndex:
+  - StageName: Global
+    NPC_IDs: 2823000029230000
+  - StageName: Main
+    NPC_IDs: e9030000ea030000eb030000ec030000ed030000ee030000

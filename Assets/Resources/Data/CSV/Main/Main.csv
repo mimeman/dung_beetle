@@ -1,0 +1,27 @@
+NPC_ID,Name,Stage,Group_ID,Situation,Step,Current_Text,Next_Step,Branch_ID,Ani_Text,Ani_Tag,Highlight_Keyword,Highlight_Color,Icon_Name
+1001,박예형,Main,Go,-,10,"흐음, 오늘은 날씨가 좋군.",11,-,Normal,Idle,-,-,-
+1001,박예형,Main,Go,-,11,자네가 호송관인가?,12,-,Normal,Talk,-,-,-
+1001,박예형,Main,Go,-,12,준비는 다 됐나?,-,B_Go_Ready,Normal,Talk,-,-,-
+1001,박예형,Main,Go,-,100,(수락) 좋아 가보자고!,-,-,Normal,Go,좋아,Red,happy_1
+1001,박예형,Main,Go,-,200,(거절) 빠진 게 있나 보군.,-,-,Normal,Idle,-,-,-
+1002,박예형,Main,Shop,-,10,어서 옵쇼! 물건 싱싱해!,-,B_Shop_Main,Normal,Talk,-,-,-
+1002,박예형,Main,Shop,-,100,(구매) 탁월한 선택이야.,-,-,Normal,good,-,-,-
+1002,박예형,Main,Shop,-,200,(나가기) 또 오슈.,-,-,Normal,bye,-,-,-
+1003,빼꼼,Main,Equip,-,10,"(깡! 깡!) 좀 비켜봐, 바빠.",11,-,Normal,-,-,-,-
+1003,빼꼼,Main,Equip,-,11,무기 손보려고?,-,B_Equip_Ask,Normal,-,-,-,-
+1003,빼꼼,Main,Equip,-,100,(수리) 이리 내놔봐.,-,-,Normal,-,-,-,-
+1003,빼꼼,Main,Equip,-,200,(종료) 그럼 가던 길 가.,-,-,Normal,-,-,-,-
+1004,-,Main,Info,-,10,정보가 필요한가?,11,-,Normal,Smile,-,-,-
+1004,-,Main,Info,-,11,돈만 내면 뭐든 알려주지.,-,B_Info_Ask,Normal,Talk,-,-,-
+1004,-,Main,Info,-,100,북쪽에 도적이 있다는 소문이 있어.,11,-,Normal,Point,-,-,-
+1004,-,Main,Info,-,200,...,-,-,Normal,Idle,-,-,-
+1005,-,Main,Normal,-,10,이 마을은 참 평화로워.,11,-,Normal,Idle,-,-,-
+1005,-,Main,Normal,-,11,북쪽 숲만 빼고 말이야.,12,-,Normal,Talk,-,-,-
+1005,-,Main,Normal,-,12,절대 그쪽으론 가지 마.,-,-,Shake,Fear,-,-,-
+1006,-,Main,Secret,-,10,"이보게, 잠깐 와봐.",11,-,Normal,Idle,-,-,-
+1006,-,Main,Secret,-,11,"돈 되는 일인데, 관심 있나?",-,B_Secret_First,Normal,Talk,-,-,-
+1006,-,Main,Secret,-,100,좋아. 근데 이거 불법이야.,101,-,Normal,Look,-,-,-
+1006,-,Main,Secret,-,101,경비병한테 걸리면 끝장이지. 할 텐가?,-,B_Secret_Deep,Shake,Fear,-,-,-
+1006,-,Main,Secret,-,200,"쳇, 겁쟁이는 필요 없어.",-,-,Normal,Ignore,-,-,-
+1006,-,Main,Secret,-,1000,배짱이 두둑하군. 받아.,1001,-,Normal,Nod,-,-,-
+1006,-,Main,Secret,-,1001,밤 12시에 우물가로 와.,-,-,Normal,Idle,-,-,-

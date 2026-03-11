@@ -1,0 +1,102 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e63e8b45ea935344e92948ea166bede2, type: 3}
+  m_Name: NPC_1001
+  m_EditorClassIdentifier: 
+  NPC_ID: 1001
+  NPC_Name: "\uBC15\uC608\uD615"
+  StageName: Main
+  Interactions:
+  - NPC_ID: 1001
+    Name: "\uBC15\uC608\uD615"
+    Stage: Main
+    Group_ID: Go
+    Situation: 
+    Step: 10
+    Current_Text: "\uD750\uC74C, \uC624\uB298\uC740 \uB0A0\uC528\uAC00 \uC88B\uAD70."
+    Next_Step: 11
+    Branch_ID: 
+    Ani_Text: Normal
+    Ani_Tag: Idle
+    Highlight_Keyword: 
+    Highlight_Color: 
+    Icon_Name: 
+    Linked_Branches: []
+  - NPC_ID: 1001
+    Name: "\uBC15\uC608\uD615"
+    Stage: Main
+    Group_ID: Go
+    Situation: 
+    Step: 11
+    Current_Text: "\uC790\uB124\uAC00 \uD638\uC1A1\uAD00\uC778\uAC00?"
+    Next_Step: 12
+    Branch_ID: 
+    Ani_Text: Normal
+    Ani_Tag: Talk
+    Highlight_Keyword: 
+    Highlight_Color: 
+    Icon_Name: 
+    Linked_Branches: []
+  - NPC_ID: 1001
+    Name: "\uBC15\uC608\uD615"
+    Stage: Main
+    Group_ID: Go
+    Situation: 
+    Step: 12
+    Current_Text: "\uC900\uBE44\uB294 \uB2E4 \uB410\uB098?"
+    Next_Step: 0
+    Branch_ID: B_Go_Ready
+    Ani_Text: Normal
+    Ani_Tag: Talk
+    Highlight_Keyword: 
+    Highlight_Color: 
+    Icon_Name: 
+    Linked_Branches:
+    - Branch_ID: B_Go_Ready
+      Stage: Main
+      Target_Step: 100
+      Button_Text: "\uCD9C\uBC1C\uD558\uC2DC\uC8E0."
+    - Branch_ID: B_Go_Ready
+      Stage: Main
+      Target_Step: 200
+      Button_Text: "\uC7A0\uC2DC\uB9CC\uC694."
+  - NPC_ID: 1001
+    Name: "\uBC15\uC608\uD615"
+    Stage: Main
+    Group_ID: Go
+    Situation: 
+    Step: 100
+    Current_Text: "(\uC218\uB77D) \uC88B\uC544 \uAC00\uBCF4\uC790\uACE0!"
+    Next_Step: 0
+    Branch_ID: 
+    Ani_Text: Normal
+    Ani_Tag: Go
+    Highlight_Keyword: "\uC88B\uC544"
+    Highlight_Color: Red
+    Icon_Name: happy_1
+    Linked_Branches: []
+  - NPC_ID: 1001
+    Name: "\uBC15\uC608\uD615"
+    Stage: Main
+    Group_ID: Go
+    Situation: 
+    Step: 200
+    Current_Text: "(\uAC70\uC808) \uBE60\uC9C4 \uAC8C \uC788\uB098 \uBCF4\uAD70."
+    Next_Step: 0
+    Branch_ID: 
+    Ani_Text: Normal
+    Ani_Tag: Idle
+    Highlight_Keyword: 
+    Highlight_Color: 
+    Icon_Name: 
+    Linked_Branches: []
+  Barks: []

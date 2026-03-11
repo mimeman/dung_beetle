@@ -1,0 +1,87 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e63e8b45ea935344e92948ea166bede2, type: 3}
+  m_Name: NPC_1003
+  m_EditorClassIdentifier: 
+  NPC_ID: 1003
+  NPC_Name: "\uBE7C\uAF3C"
+  StageName: Main
+  Interactions:
+  - NPC_ID: 1003
+    Name: "\uBE7C\uAF3C"
+    Stage: Main
+    Group_ID: Equip
+    Situation: 
+    Step: 10
+    Current_Text: "(\uAE61! \uAE61!) \uC880 \uBE44\uCF1C\uBD10, \uBC14\uBE60."
+    Next_Step: 11
+    Branch_ID: 
+    Ani_Text: Normal
+    Ani_Tag: 
+    Highlight_Keyword: 
+    Highlight_Color: 
+    Icon_Name: 
+    Linked_Branches: []
+  - NPC_ID: 1003
+    Name: "\uBE7C\uAF3C"
+    Stage: Main
+    Group_ID: Equip
+    Situation: 
+    Step: 11
+    Current_Text: "\uBB34\uAE30 \uC190\uBCF4\uB824\uACE0?"
+    Next_Step: 0
+    Branch_ID: B_Equip_Ask
+    Ani_Text: Normal
+    Ani_Tag: 
+    Highlight_Keyword: 
+    Highlight_Color: 
+    Icon_Name: 
+    Linked_Branches:
+    - Branch_ID: B_Equip_Ask
+      Stage: Main
+      Target_Step: 100
+      Button_Text: "\uC218\uB9AC\uD574\uC918."
+    - Branch_ID: B_Equip_Ask
+      Stage: Main
+      Target_Step: 200
+      Button_Text: "\uC544\uB2C8\uC57C."
+  - NPC_ID: 1003
+    Name: "\uBE7C\uAF3C"
+    Stage: Main
+    Group_ID: Equip
+    Situation: 
+    Step: 100
+    Current_Text: "(\uC218\uB9AC) \uC774\uB9AC \uB0B4\uB194\uBD10."
+    Next_Step: 0
+    Branch_ID: 
+    Ani_Text: Normal
+    Ani_Tag: 
+    Highlight_Keyword: 
+    Highlight_Color: 
+    Icon_Name: 
+    Linked_Branches: []
+  - NPC_ID: 1003
+    Name: "\uBE7C\uAF3C"
+    Stage: Main
+    Group_ID: Equip
+    Situation: 
+    Step: 200
+    Current_Text: "(\uC885\uB8CC) \uADF8\uB7FC \uAC00\uB358 \uAE38 \uAC00."
+    Next_Step: 0
+    Branch_ID: 
+    Ani_Text: Normal
+    Ani_Tag: 
+    Highlight_Keyword: 
+    Highlight_Color: 
+    Icon_Name: 
+    Linked_Branches: []
+  Barks: []
