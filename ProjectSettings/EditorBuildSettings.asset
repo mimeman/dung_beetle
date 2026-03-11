@@ -4,6 +4,12 @@
 EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
-  m_Scenes: []
+  m_Scenes:
+  - enabled: 1
+    path: Assets/00. Scenes/KHD/MainUIScene.unity
+    guid: 4c5f14883224a4e3dab0726d46a5589e
+  - enabled: 1
+    path: Assets/00. Scenes/KHD/DialogueScene.unity
+    guid: e9017d5f96b9f09489b4b37e1d6eb914
   m_configObjects:
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 771d770bca76c4143a116d46fda23b95, type: 3}

@@ -1,0 +1,154 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e63e8b45ea935344e92948ea166bede2, type: 3}
+  m_Name: NPC_9000
+  m_EditorClassIdentifier: 
+  NPC_ID: 9000
+  NPC_Name: "\uBC15\uC608\uD615"
+  StageName: Global
+  Interactions: []
+  Barks:
+  - NPC_ID: 9000
+    Name: "\uBC15\uC608\uD615"
+    Stage: 
+    Group_ID: 
+    Situation: OnHit
+    Step: 100
+    Current_Text: "\uC73C\uC545!"
+    Next_Step: 101
+    Branch_ID: 
+    Ani_Text: 
+    Ani_Tag: OnHit
+    Highlight_Keyword: 
+    Highlight_Color: 
+    Icon_Name: 
+    Linked_Branches: []
+  - NPC_ID: 9000
+    Name: "\uBC15\uC608\uD615"
+    Stage: 
+    Group_ID: 
+    Situation: OnHit
+    Step: 101
+    Current_Text: "\uC544\uD504\uC796\uC544!"
+    Next_Step: 102
+    Branch_ID: 
+    Ani_Text: 
+    Ani_Tag: OnHit
+    Highlight_Keyword: 
+    Highlight_Color: 
+    Icon_Name: 
+    Linked_Branches: []
+  - NPC_ID: 9000
+    Name: "\uBC15\uC608\uD615"
+    Stage: 
+    Group_ID: 
+    Situation: OnHit
+    Step: 102
+    Current_Text: "\uADF8\uB9CC\uD574!"
+    Next_Step: 100
+    Branch_ID: 
+    Ani_Text: 
+    Ani_Tag: OnHit
+    Highlight_Keyword: 
+    Highlight_Color: 
+    Icon_Name: 
+    Linked_Branches: []
+  - NPC_ID: 9000
+    Name: "\uBC15\uC608\uD615"
+    Stage: 
+    Group_ID: 
+    Situation: Run
+    Step: 200
+    Current_Text: "\uB6F0\uC5B4!"
+    Next_Step: 0
+    Branch_ID: 
+    Ani_Text: 
+    Ani_Tag: Run
+    Highlight_Keyword: 
+    Highlight_Color: 
+    Icon_Name: 
+    Linked_Branches: []
+  - NPC_ID: 9000
+    Name: "\uBC15\uC608\uD615"
+    Stage: 
+    Group_ID: 
+    Situation: Run
+    Step: 201
+    Current_Text: "\uC73C\uC544\uC544 \uB3C4\uB9DD\uCCD0!"
+    Next_Step: 0
+    Branch_ID: 
+    Ani_Text: 
+    Ani_Tag: Run
+    Highlight_Keyword: 
+    Highlight_Color: 
+    Icon_Name: 
+    Linked_Branches: []
+  - NPC_ID: 9000
+    Name: "\uBC15\uC608\uD615"
+    Stage: 
+    Group_ID: 
+    Situation: Run
+    Step: 202
+    Current_Text: "\uC544\uC774\uACE0! \uB098 \uC0B4\uB824"
+    Next_Step: 0
+    Branch_ID: 
+    Ani_Text: 
+    Ani_Tag: Run
+    Highlight_Keyword: 
+    Highlight_Color: 
+    Icon_Name: 
+    Linked_Branches: []
+  - NPC_ID: 9000
+    Name: "\uBC15\uC608\uD615"
+    Stage: 
+    Group_ID: 
+    Situation: Surprise
+    Step: 300
+    Current_Text: "\uB204\uAD6C\uC138\uC694?"
+    Next_Step: 0
+    Branch_ID: 
+    Ani_Text: 
+    Ani_Tag: Surprise
+    Highlight_Keyword: 
+    Highlight_Color: 
+    Icon_Name: 
+    Linked_Branches: []
+  - NPC_ID: 9000
+    Name: "\uBC15\uC608\uD615"
+    Stage: 
+    Group_ID: 
+    Situation: Surprise
+    Step: 301
+    Current_Text: "\uC544\uC774 \uAE5C\uC9DD\uC544"
+    Next_Step: 0
+    Branch_ID: 
+    Ani_Text: 
+    Ani_Tag: Surprise
+    Highlight_Keyword: 
+    Highlight_Color: 
+    Icon_Name: 
+    Linked_Branches: []
+  - NPC_ID: 9000
+    Name: "\uBC15\uC608\uD615"
+    Stage: 
+    Group_ID: 
+    Situation: Surprise
+    Step: 302
+    Current_Text: "\uC544\uC774\uACE0 \uB180\uB798\uB77C"
+    Next_Step: 0
+    Branch_ID: 
+    Ani_Text: 
+    Ani_Tag: Surprise
+    Highlight_Keyword: 
+    Highlight_Color: 
+    Icon_Name: 
+    Linked_Branches: []

@@ -1,0 +1,17 @@
+Branch_ID,Stage,Target_Step,Button_Text
+B_Go_Ready,Main,100,출발하시죠.
+B_Go_Ready,Main,200,잠시만요.
+B_Shop_Main,Main,100,물건을 살게.
+B_Shop_Main,Main,200,안 사요.
+B_Equip_Ask,Main,100,수리해줘.
+B_Equip_Ask,Main,200,아니야.
+B_Info_Ask,Main,100,알려줘.
+B_Info_Ask,Main,200,이제 됐어.
+B_Secret_First,Main,100,뭔데?
+B_Secret_First,Main,200,수상해. 안 해.
+B_Secret_Deep,Main,1000,까짓것 하지 뭐.
+B_Secret_Deep,Main,200,불법은 좀...
+B_St1_Tactics,Stage_01,100,정면 돌파한다!
+B_St1_Tactics,Stage_01,200,숲으로 우회하자.
+B_St1_Wagon,Stage_02,100,바퀴를 고쳐준다.
+B_St1_Wagon,Stage_02,200,그냥 간다.

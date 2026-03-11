@@ -1,0 +1,19 @@
+NPC_ID,Name,Stage,Group_ID,Situation,Step,Current_Text,Next_Step,Branch_ID,Ani_Text,Ani_Tag,Highlight_Keyword,Highlight_Color,Icon_Name
+9000,박예형,-,-,OnHit,100,으악!,101,-,-,OnHit,-,-,-
+9000,박예형,-,-,OnHit,101,아프잖아!,102,-,-,OnHit,-,-,-
+9000,박예형,-,-,OnHit,102,그만해!,100,-,-,OnHit,-,-,-
+9000,박예형,-,-,Run,200,뛰어!,-,-,-,Run,-,-,-
+9000,박예형,-,-,Run,201,으아아 도망쳐!,-,-,-,Run,-,-,-
+9000,박예형,-,-,Run,202,아이고! 나 살려,-,-,-,Run,-,-,-
+9000,박예형,-,-,Surprise,300,누구세요?,-,-,-,Surprise,-,-,-
+9000,박예형,-,-,Surprise,301,아이 깜짝아,-,-,-,Surprise,-,-,-
+9000,박예형,-,-,Surprise,302,아이고 놀래라,-,-,-,Surprise,-,-,-
+9001,빼꼼,-,-,OnHit,100,으악!,101,-,-,OnHit,-,-,-
+9001,빼꼼,-,-,OnHit,101,아프잖아!,102,-,-,OnHit,-,-,-
+9001,빼꼼,-,-,OnHit,102,그만해!,100,-,-,OnHit,-,-,-
+9001,빼꼼,-,-,Run,200,뛰어!,-,-,-,Run,-,-,-
+9001,빼꼼,-,-,Run,201,으아아 도망쳐!,-,-,-,Run,-,-,-
+9001,빼꼼,-,-,Run,202,아이고! 나 살려,-,-,-,Run,-,-,-
+9001,빼꼼,-,-,Surprise,300,누구세요?,-,-,-,Surprise,-,-,-
+9001,빼꼼,-,-,Surprise,301,아이 깜짝아,-,-,-,Surprise,-,-,-
+9001,빼꼼,-,-,Surprise,302,아이고 놀래라,-,-,-,Surprise,-,-,-
