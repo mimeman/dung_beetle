@@ -34,6 +34,7 @@ public class PlayerPushState : PlayerState
     private const float STEP_HEIGHT = 0.15f;
     private const float STEP_LENGTH = 0.2f;
 
+    // Exit 처리
     private bool _isExiting = false;
     private float _exitTimer = 0f;
     private const float EXIT_DURATION = 0.8f;
@@ -46,6 +47,7 @@ public class PlayerPushState : PlayerState
     public override void Enter()
     {
         base.Enter();
+        CameraManager.Instance?.OnPushStart();
 
         _targetDung = player.Detector.CurrentInteractable as IDungInteractable;
         if (_targetDung == null)
@@ -57,10 +59,9 @@ public class PlayerPushState : PlayerState
         _ikSolver = player.IKSolver;
         InitializeIKTargets();
 
-        // ✅ pushDistanceOffset을 런타임에 Stats에서 읽음 → Inspector에서 실시간 조절 가능
         if (_targetDung is DungBallController dungController)
         {
-            _pushDistance = dungController.CurrentRadius + player.Stats.push.pushDistanceOffset;
+            _pushDistance = dungController.CurrentRadius + 0.8f;
         }
 
         SetupPhysics();
@@ -219,6 +220,7 @@ public class PlayerPushState : PlayerState
     public override void Exit()
     {
         base.Exit();
+        CameraManager.Instance?.OnPushEnd();
 
         if (!_isExiting)
         {
@@ -382,29 +384,17 @@ public class PlayerPushState : PlayerState
 
         Vector3 dungPos = _targetDung.GetPosition();
         Vector3 playerPos = player.transform.position;
+
         Vector3 toDung = (dungPos - playerPos).normalized;
 
-        float currentPushDist = (_targetDung is DungBallController dc)
-            ? dc.CurrentRadius + player.Stats.push.pushDistanceOffset
-            : _pushDistance;
-
-        Vector3 targetPosition = dungPos - toDung * currentPushDist;
+        Vector3 targetPosition = dungPos - toDung * _pushDistance;
         targetPosition.y = playerPos.y;
 
         float distance = Vector3.Distance(playerPos, targetPosition);
-        if (distance < 0.05f) return;
+        if (distance < 0.1f) return;
 
-        float snapThreshold = currentPushDist * 0.3f;
-        if (distance > snapThreshold)
-        {
-            // 즉시 스냅 (공이 빠르게 움직여도 뒤처지지 않음)
-            player.Rb.MovePosition(targetPosition);
-        }
-        else
-        {
-            float lerpSpeed = Mathf.Clamp01(distance / currentPushDist) * 0.5f;
-            player.Rb.MovePosition(Vector3.Lerp(playerPos, targetPosition, lerpSpeed));
-        }
+        float lerpSpeed = Mathf.Clamp01(distance / _pushDistance) * 0.5f;
+        player.Rb.MovePosition(Vector3.Lerp(playerPos, targetPosition, lerpSpeed));
     }
     #endregion
 }
