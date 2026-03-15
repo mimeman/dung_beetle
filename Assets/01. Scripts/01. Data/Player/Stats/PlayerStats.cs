@@ -11,7 +11,7 @@ namespace Dung.Data
         [Header("물리 (점프 & 중력)")]
         public PhysicsData physics;
 
-        [Header( "비행")]
+        [Header("비행")]
         public FlightData flight;
 
         [Header("쇠똥 밀기")]
@@ -86,8 +86,12 @@ namespace Dung.Data
             [Tooltip("공에 가해지는 물리적인 힘의 크기")]
             public float pushForce = 25.0f;
 
-            [Tooltip("플레이어와 공 사이 거리 오프셋 (작을수록 가까워짐)")]
-            public float pushDistanceOffset = 0.05f;
+            [Header("IK 배치")]
+            [Tooltip("공 표면 ~ 플레이어 몸통 사이 간격")]
+            public float pushDistanceOffset = 0.005f;
+
+            [Tooltip("뒷다리 높이 배율 (높을수록 머리가 덜 숙여짐)")]
+            public float backLegHeightMultiplier = 0.4f;
         }
 
         [System.Serializable]

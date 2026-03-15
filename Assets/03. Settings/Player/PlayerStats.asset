@@ -20,7 +20,7 @@ MonoBehaviour:
     deceleration: 20
   physics:
     jumpForce: 4
-    jumpCooldown: 0.8
+    jumpCooldown: 0.6
     gravityMultiplier: 2
   flight:
     flyUpForce: 15
@@ -31,7 +31,8 @@ MonoBehaviour:
     speedMultiplier: 0.7
     pushRotationSpeed: 3
     pushForce: 15
-    pushDistanceOffset: 0.1
+    pushDistanceOffset: 0.005
+    backLegHeightMultiplier: 0.5
   detection:
     groundLayer:
       serializedVersion: 2

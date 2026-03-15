@@ -31,10 +31,15 @@ public class PlayerPushState : PlayerState
 
     private float _walkCycleTimer = 0f;
     private const float STEP_DURATION = 0.5f;
-    private const float STEP_HEIGHT = 0.15f;
-    private const float STEP_LENGTH = 0.2f;
 
-    // Exit 처리
+    private float _stepHeight;
+    private float _stepLength;
+    private float _backLegOffset;
+    private float _backLegHeight;
+    private float _frontLegSpread;
+    private float _frontLegForwardOffset;
+    private float _pushDistanceOffset;
+
     private bool _isExiting = false;
     private float _exitTimer = 0f;
     private const float EXIT_DURATION = 0.8f;
@@ -58,10 +63,12 @@ public class PlayerPushState : PlayerState
 
         _ikSolver = player.IKSolver;
         InitializeIKTargets();
+        CalculateScaledOffsets();
 
         if (_targetDung is DungBallController dungController)
         {
-            _pushDistance = dungController.CurrentRadius + 0.8f;
+            float worldRadius = dungController.CurrentRadius * dungController.transform.localScale.x;
+            _pushDistance = worldRadius + _pushDistanceOffset;
         }
 
         SetupPhysics();
@@ -87,6 +94,23 @@ public class PlayerPushState : PlayerState
 
         _isExiting = false;
         _exitTimer = 0f;
+    }
+
+    /// <summary>
+    /// 원본은 scale=1 기준으로 0.8f, 0.3f, 0.2f, 0.5f 등을 사용.
+    /// 플레이어 스케일에 비례하여 동일 비율 유지.
+    /// </summary>
+    private void CalculateScaledOffsets()
+    {
+        float s = player.transform.localScale.x; // 잘되는 버전: 1.0, 현재: 0.3
+
+        _pushDistanceOffset = player.Stats.push.pushDistanceOffset;
+        _stepHeight = 0.15f * s;
+        _stepLength = 0.2f * s;
+        _backLegOffset = 0.3f * s;       // legOffset
+        _backLegHeight = player.Stats.push.backLegHeightMultiplier * s;
+        _frontLegSpread = 0.2f * s;      // rightDir * 0.2f
+        _frontLegForwardOffset = 0.5f * s; // playerPos - toDung * 0.5f
     }
 
     public override void LogicUpdate()
@@ -307,13 +331,18 @@ public class PlayerPushState : PlayerState
         _ikSolver.solver.rightHandEffector.positionWeight = 0f;
     }
 
+    /// <summary>
+    /// 원본과 동일한 로직, 하드코딩 수치만 스케일 비례 변수로 교체.
+    /// </summary>
     private void UpdateIKTargetsWithWalking()
     {
         if (_targetDung == null) return;
 
         Vector3 dungPos = _targetDung.GetPosition();
         Vector3 playerPos = player.transform.position;
-        float radius = (_targetDung is DungBallController dc) ? dc.CurrentRadius : 1f;
+        float radius = (_targetDung is DungBallController dc)
+            ? dc.CurrentRadius * dc.transform.localScale.x
+            : 0.5f;
 
         Vector3 toDung = (dungPos - playerPos).normalized;
         Vector3 rightDir = Vector3.Cross(Vector3.up, toDung).normalized;
@@ -323,32 +352,33 @@ public class PlayerPushState : PlayerState
         float leftFootPhase = Mathf.Sin(cycle / STEP_DURATION * Mathf.PI);
         float rightFootPhase = Mathf.Sin((cycle + STEP_DURATION) / STEP_DURATION * Mathf.PI);
 
+        // ★ 원본: dungPos - toDung * radius → 공 표면 뒤쪽
         Vector3 backLegCenter = dungPos - toDung * radius;
-        float legOffset = 0.3f;
 
-        Vector3 leftBackBase = backLegCenter + rightDir * legOffset;
-        Vector3 rightBackBase = backLegCenter - rightDir * legOffset;
+        Vector3 leftBackBase = backLegCenter + rightDir * _backLegOffset;
+        Vector3 rightBackBase = backLegCenter - rightDir * _backLegOffset;
 
         _leftBackLegTarget.position = leftBackBase
-            + Vector3.up * (0.2f + STEP_HEIGHT * Mathf.Max(0, leftFootPhase))
-            + toDung * (STEP_LENGTH * 0.5f * Mathf.Cos(cycle / STEP_DURATION * Mathf.PI));
+            + Vector3.up * (_backLegHeight + _stepHeight * Mathf.Max(0, leftFootPhase))
+            + toDung * (_stepLength * 0.5f * Mathf.Cos(cycle / STEP_DURATION * Mathf.PI));
 
         _rightBackLegTarget.position = rightBackBase
-            + Vector3.up * (0.2f + STEP_HEIGHT * Mathf.Max(0, rightFootPhase))
-            + toDung * (STEP_LENGTH * 0.5f * Mathf.Cos((cycle + STEP_DURATION) / STEP_DURATION * Mathf.PI));
+            + Vector3.up * (_backLegHeight + _stepHeight * Mathf.Max(0, rightFootPhase))
+            + toDung * (_stepLength * 0.5f * Mathf.Cos((cycle + STEP_DURATION) / STEP_DURATION * Mathf.PI));
 
-        Vector3 frontLegBase = playerPos - toDung * 0.5f;
+        // ★ 원본: playerPos - toDung * 0.5f → 플레이어 앞쪽 (공 반대)
+        Vector3 frontLegBase = playerPos - toDung * _frontLegForwardOffset;
 
         float frontLeftPhase = Mathf.Sin((cycle + STEP_DURATION * 0.5f) / STEP_DURATION * Mathf.PI);
         float frontRightPhase = Mathf.Sin((cycle + STEP_DURATION * 1.5f) / STEP_DURATION * Mathf.PI);
 
-        _leftFrontLegTarget.position = frontLegBase + rightDir * 0.2f
-            + Vector3.up * (STEP_HEIGHT * 0.5f * Mathf.Max(0, frontLeftPhase))
-            - toDung * (STEP_LENGTH * Mathf.Max(0, frontLeftPhase));
+        _leftFrontLegTarget.position = frontLegBase + rightDir * _frontLegSpread
+            + Vector3.up * (_stepHeight * 0.5f * Mathf.Max(0, frontLeftPhase))
+            - toDung * (_stepLength * Mathf.Max(0, frontLeftPhase));
 
-        _rightFrontLegTarget.position = frontLegBase - rightDir * 0.2f
-            + Vector3.up * (STEP_HEIGHT * 0.5f * Mathf.Max(0, frontRightPhase))
-            - toDung * (STEP_LENGTH * Mathf.Max(0, frontRightPhase));
+        _rightFrontLegTarget.position = frontLegBase - rightDir * _frontLegSpread
+            + Vector3.up * (_stepHeight * 0.5f * Mathf.Max(0, frontRightPhase))
+            - toDung * (_stepLength * Mathf.Max(0, frontRightPhase));
     }
     #endregion
 
