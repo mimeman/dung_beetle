@@ -13,6 +13,8 @@ public class PlayerInputHandler : MonoBehaviour
     public bool IsDashPressed { get; private set; }
     public bool IsActionPressed { get; private set; }
     public bool IsAiming { get; private set; }
+    public bool ToggleViewTriggered { get; private set; }
+
 
 
     public bool JumpTriggered { get; private set; }
@@ -35,6 +37,8 @@ public class PlayerInputHandler : MonoBehaviour
         _inputReader.InteractEvent += OnInteract;
         _inputReader.ActionEvent += OnAction;
         _inputReader.AimEvent += OnAim;
+        _inputReader.ToggleViewEvent += OnToggleView;
+
     }
 
     private void OnDisable()
@@ -49,6 +53,8 @@ public class PlayerInputHandler : MonoBehaviour
         _inputReader.InteractEvent -= OnInteract;
         _inputReader.ActionEvent -= OnAction;
         _inputReader.AimEvent -= OnAim;
+        _inputReader.ToggleViewEvent -= OnToggleView;
+
     }
 
     private void LateUpdate()
@@ -56,6 +62,7 @@ public class PlayerInputHandler : MonoBehaviour
         JumpTriggered = false;
         InteractTriggered = false;
         ActionReleasedTriggered = false;
+        ToggleViewTriggered = false;
     }
 
     private void OnMove(Vector2 input) => MoveInput = SuppressGameplayInput ? Vector2.zero : input;
@@ -81,4 +88,9 @@ public class PlayerInputHandler : MonoBehaviour
     }
 
     private void OnAim(bool active) => IsAiming = !SuppressGameplayInput && active;
+
+    private void OnToggleView()
+    {
+        if (!SuppressGameplayInput) ToggleViewTriggered = true;
+    }
 }

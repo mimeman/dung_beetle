@@ -154,6 +154,15 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""ToggleView"",
+                    ""type"": ""Button"",
+                    ""id"": ""952eac25-35b2-417a-8f3e-3db8a9254a3f"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -277,6 +286,17 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
                     ""action"": ""Move"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""9029778e-1eac-456d-87ae-1d358d032b78"",
+                    ""path"": ""<Keyboard>/v"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""ToggleView"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -292,6 +312,7 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
         m_Player_Action = m_Player.FindAction("Action", throwIfNotFound: true);
         m_Player_Aim = m_Player.FindAction("Aim", throwIfNotFound: true);
         m_Player_Interact = m_Player.FindAction("Interact", throwIfNotFound: true);
+        m_Player_ToggleView = m_Player.FindAction("ToggleView", throwIfNotFound: true);
     }
 
     ~@PlayerControls()
@@ -379,6 +400,7 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
     private readonly InputAction m_Player_Action;
     private readonly InputAction m_Player_Aim;
     private readonly InputAction m_Player_Interact;
+    private readonly InputAction m_Player_ToggleView;
     /// <summary>
     /// Provides access to input actions defined in input action map "Player".
     /// </summary>
@@ -418,6 +440,10 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
         /// Provides access to the underlying input action "Player/Interact".
         /// </summary>
         public InputAction @Interact => m_Wrapper.m_Player_Interact;
+        /// <summary>
+        /// Provides access to the underlying input action "Player/ToggleView".
+        /// </summary>
+        public InputAction @ToggleView => m_Wrapper.m_Player_ToggleView;
         /// <summary>
         /// Provides access to the underlying input action map instance.
         /// </summary>
@@ -465,6 +491,9 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
             @Interact.started += instance.OnInteract;
             @Interact.performed += instance.OnInteract;
             @Interact.canceled += instance.OnInteract;
+            @ToggleView.started += instance.OnToggleView;
+            @ToggleView.performed += instance.OnToggleView;
+            @ToggleView.canceled += instance.OnToggleView;
         }
 
         /// <summary>
@@ -497,6 +526,9 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
             @Interact.started -= instance.OnInteract;
             @Interact.performed -= instance.OnInteract;
             @Interact.canceled -= instance.OnInteract;
+            @ToggleView.started -= instance.OnToggleView;
+            @ToggleView.performed -= instance.OnToggleView;
+            @ToggleView.canceled -= instance.OnToggleView;
         }
 
         /// <summary>
@@ -586,5 +618,12 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
         /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
         /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
         void OnInteract(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "ToggleView" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnToggleView(InputAction.CallbackContext context);
     }
 }

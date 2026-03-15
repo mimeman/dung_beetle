@@ -68,6 +68,15 @@
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": false
+                },
+                {
+                    "name": "ToggleView",
+                    "type": "Button",
+                    "id": "952eac25-35b2-417a-8f3e-3db8a9254a3f",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
                 }
             ],
             "bindings": [
@@ -191,6 +200,17 @@
                     "action": "Move",
                     "isComposite": false,
                     "isPartOfComposite": true
+                },
+                {
+                    "name": "",
+                    "id": "9029778e-1eac-456d-87ae-1d358d032b78",
+                    "path": "<Keyboard>/v",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "ToggleView",
+                    "isComposite": false,
+                    "isPartOfComposite": false
                 }
             ]
         }

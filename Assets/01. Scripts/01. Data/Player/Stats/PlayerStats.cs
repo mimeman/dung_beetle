@@ -85,6 +85,9 @@ namespace Dung.Data
 
             [Tooltip("공에 가해지는 물리적인 힘의 크기")]
             public float pushForce = 25.0f;
+
+            [Tooltip("플레이어와 공 사이 거리 오프셋 (작을수록 가까워짐)")]
+            public float pushDistanceOffset = 0.05f;
         }
 
         [System.Serializable]

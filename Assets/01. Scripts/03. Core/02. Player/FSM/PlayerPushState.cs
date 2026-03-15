@@ -17,7 +17,7 @@ public class PlayerPushState : PlayerState
     private float _pushDistance = 1.2f;
     private bool _isAttached = false;
     private float _attachTimer = 0f;
-    private const float ATTACH_DURATION = 0.1f;
+    private const float ATTACH_DURATION = 0.5f;
     private const float ROTATION_DURATION = 0.3f;
 
     private bool _isRotating = false;
@@ -26,7 +26,7 @@ public class PlayerPushState : PlayerState
     private Quaternion _targetRotation;
 
     private float _ikWeightTimer = 0f;
-    private const float IK_BLEND_DURATION = 0.1f;
+    private const float IK_BLEND_DURATION = 1.0f;
     private float _currentIKWeight = 0f;
 
     private float _walkCycleTimer = 0f;
@@ -34,10 +34,9 @@ public class PlayerPushState : PlayerState
     private const float STEP_HEIGHT = 0.15f;
     private const float STEP_LENGTH = 0.2f;
 
-    // Exit 처리
     private bool _isExiting = false;
     private float _exitTimer = 0f;
-    private const float EXIT_DURATION = 0.8f; // IK 끄기 + 회전
+    private const float EXIT_DURATION = 0.8f;
     private Quaternion _exitStartRotation;
     private Quaternion _exitTargetRotation;
 
@@ -47,63 +46,72 @@ public class PlayerPushState : PlayerState
     public override void Enter()
     {
         base.Enter();
+
         _targetDung = player.Detector.CurrentInteractable as IDungInteractable;
         if (_targetDung == null)
         {
             stateMachine.ChangeState(player.IdleState);
             return;
         }
+
         _ikSolver = player.IKSolver;
         InitializeIKTargets();
+
+        // ✅ pushDistanceOffset을 런타임에 Stats에서 읽음 → Inspector에서 실시간 조절 가능
         if (_targetDung is DungBallController dungController)
         {
-            _pushDistance = dungController.CurrentRadius + 0.8f;
+            _pushDistance = dungController.CurrentRadius + player.Stats.push.pushDistanceOffset;
         }
+
         SetupPhysics();
+
         player.Anim.SetTrigger("PushEnter");
         player.Anim.SetBool("IsPushing", true);
         _targetDung.OnPushStart(player.gameObject);
+
         player.SetGrounderWeight(1f);
+
         _isRotating = true;
         _rotationTimer = 0f;
         _startRotation = player.transform.rotation;
         Vector3 toDung = (_targetDung.GetPosition() - player.transform.position).normalized;
         _targetRotation = Quaternion.LookRotation(-toDung);
-        _ikSolver.enabled = false;
+
         _isAttached = false;
         _attachTimer = 0f;
+
         _ikWeightTimer = 0f;
         _currentIKWeight = 0f;
         _walkCycleTimer = 0f;
+
         _isExiting = false;
         _exitTimer = 0f;
-        SnapIKTargetsToCurrentBones();
     }
 
     public override void LogicUpdate()
     {
         base.LogicUpdate();
-        // Exit 처리 중
+
         if (_isExiting)
         {
             HandleExit();
             return;
         }
-        // 회전 중
+
         if (_isRotating)
         {
             _rotationTimer += Time.deltaTime;
             float t = _rotationTimer / ROTATION_DURATION;
+
             player.transform.rotation = Quaternion.Slerp(_startRotation, _targetRotation, t);
+
             if (t >= 1f)
             {
                 _isRotating = false;
-                SnapIKTargetsToCurrentBones();
-                _ikSolver.enabled = true;
             }
             return;
         }
-        // 부착 대기
+
         if (!_isAttached)
         {
             _attachTimer += Time.deltaTime;
@@ -114,20 +122,23 @@ public class PlayerPushState : PlayerState
             }
             return;
         }
-        // IK Weight 부드럽게 증가
+
         if (_currentIKWeight < 1f)
         {
             _ikWeightTimer += Time.deltaTime;
             _currentIKWeight = Mathf.Clamp01(_ikWeightTimer / IK_BLEND_DURATION);
             UpdateIKWeight(_currentIKWeight);
         }
+
         Vector2 input = player.Input.MoveInput;
         if (input.sqrMagnitude > 0.01f)
         {
             _walkCycleTimer += Time.deltaTime * 2f;
         }
+
         float pushSpeed = input.magnitude;
         player.Anim.SetFloat("PushSpeed", pushSpeed);
+
         UpdateIKTargetsWithWalking();
     }
 
@@ -136,7 +147,6 @@ public class PlayerPushState : PlayerState
         base.PhysicsUpdate();
         if (_targetDung == null) return;
 
-        // Exit 중이 아닐 때만 위치 고정
         if (!_isExiting && _isAttached)
         {
             StickToTarget();
@@ -159,7 +169,6 @@ public class PlayerPushState : PlayerState
         player.PhysicsHandler.AddPushForceToDung(_targetDung, pushDir, player.Stats.push.pushForce);
     }
 
-    // Exit 시작 (E키 다시 누름)
     public void StartExit()
     {
         if (_isExiting) return;
@@ -167,10 +176,9 @@ public class PlayerPushState : PlayerState
         _isExiting = true;
         _exitTimer = 0f;
 
-        // 현재 회전에서 똥 방향(180도 반대)으로
         _exitStartRotation = player.transform.rotation;
         Vector3 toDung = (_targetDung.GetPosition() - player.transform.position).normalized;
-        _exitTargetRotation = Quaternion.LookRotation(toDung); // 똥 바라보기 (원래 방향)
+        _exitTargetRotation = Quaternion.LookRotation(toDung);
 
         player.Anim.SetTrigger("PushExit");
 
@@ -185,19 +193,16 @@ public class PlayerPushState : PlayerState
         _exitTimer += Time.deltaTime;
         float t = _exitTimer / EXIT_DURATION;
 
-        // IK Weight 부드럽게 감소 (0.5초 동안)
-        float ikT = Mathf.Clamp01(t * 2f); // 전체의 절반 시간 동안
+        float ikT = Mathf.Clamp01(t * 2f);
         float ikWeight = Mathf.Lerp(_currentIKWeight, 0f, ikT);
         UpdateIKWeight(ikWeight);
 
-        // 회전 (0.3초 대기 후 시작)
         if (t > 0.3f)
         {
             float rotT = Mathf.Clamp01((t - 0.3f) / 0.5f);
             player.transform.rotation = Quaternion.Slerp(_exitStartRotation, _exitTargetRotation, rotT);
         }
 
-        // 완료
         if (t >= 1f)
         {
             CleanupPhysics();
@@ -215,7 +220,6 @@ public class PlayerPushState : PlayerState
     {
         base.Exit();
 
-        // 강제 종료 시에만 (정상 Exit은 HandleExit에서 처리)
         if (!_isExiting)
         {
             DisableIK();
@@ -258,22 +262,6 @@ public class PlayerPushState : PlayerState
         if (_rightBackLegTarget == null) Debug.LogError("RightBackLegTarget not found!");
         if (_leftFrontLegTarget == null) Debug.LogError("LeftFrontLegTarget not found!");
         if (_rightFrontLegTarget == null) Debug.LogError("RightFrontLegTarget not found!");
-    }
-
-    private void SnapIKTargetsToCurrentBones()
-    {
-        if (_ikSolver == null) return;
-
-        TrySnapTarget(_leftBackLegTarget, _ikSolver.solver.leftFootEffector.bone?.transform);
-        TrySnapTarget(_rightBackLegTarget, _ikSolver.solver.rightFootEffector.bone?.transform);
-        TrySnapTarget(_leftFrontLegTarget, _ikSolver.solver.leftHandEffector.bone?.transform);
-        TrySnapTarget(_rightFrontLegTarget, _ikSolver.solver.rightHandEffector.bone?.transform);
-    }
-
-    private void TrySnapTarget(Transform target, Transform bone)
-    {
-        if (target != null && bone != null)
-            target.position = bone.position;
     }
 
     private void EnableIK()
@@ -394,19 +382,29 @@ public class PlayerPushState : PlayerState
 
         Vector3 dungPos = _targetDung.GetPosition();
         Vector3 playerPos = player.transform.position;
-
         Vector3 toDung = (dungPos - playerPos).normalized;
 
-        Vector3 targetPosition = dungPos - toDung * _pushDistance;
+        float currentPushDist = (_targetDung is DungBallController dc)
+            ? dc.CurrentRadius + player.Stats.push.pushDistanceOffset
+            : _pushDistance;
+
+        Vector3 targetPosition = dungPos - toDung * currentPushDist;
         targetPosition.y = playerPos.y;
 
-        // 거리 체크 - 너무 가까우면 보정 안 함
         float distance = Vector3.Distance(playerPos, targetPosition);
-        if (distance < 0.1f) return; // 10cm 이내면 보정 안 함
+        if (distance < 0.05f) return;
 
-        // Lerp 값 조정 (0.9 → 0.5로 부드럽게)
-        float lerpSpeed = Mathf.Clamp01(distance / _pushDistance) * 0.5f;
-        player.Rb.MovePosition(Vector3.Lerp(playerPos, targetPosition, lerpSpeed));
+        float snapThreshold = currentPushDist * 0.3f;
+        if (distance > snapThreshold)
+        {
+            // 즉시 스냅 (공이 빠르게 움직여도 뒤처지지 않음)
+            player.Rb.MovePosition(targetPosition);
+        }
+        else
+        {
+            float lerpSpeed = Mathf.Clamp01(distance / currentPushDist) * 0.5f;
+            player.Rb.MovePosition(Vector3.Lerp(playerPos, targetPosition, lerpSpeed));
+        }
     }
     #endregion
 }

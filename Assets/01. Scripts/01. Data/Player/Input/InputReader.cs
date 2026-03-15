@@ -18,6 +18,8 @@ namespace Dung.Inputs
         public event Action<bool> ActionEvent;
         public event Action<bool> AimEvent;
         public event Action InteractEvent;
+        public event Action ToggleViewEvent;
+
 
         private PlayerActionMap _inputActions;
 
@@ -66,6 +68,10 @@ namespace Dung.Inputs
         public void OnInteract(InputAction.CallbackContext context)
         {
             if (context.performed) InteractEvent?.Invoke();
+        }
+        public void OnToggleView(InputAction.CallbackContext context)
+        {
+            if (context.performed) ToggleViewEvent?.Invoke();
         }
     }
 }

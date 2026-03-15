@@ -13,9 +13,9 @@ MonoBehaviour:
   m_Name: PlayerStats
   m_EditorClassIdentifier: 
   movement:
-    walkSpeed: 2
-    runSpeed: 4
-    rotationSpeed: 12
+    walkSpeed: 1
+    runSpeed: 2
+    rotationSpeed: 10
     acceleration: 25
     deceleration: 20
   physics:
@@ -30,7 +30,8 @@ MonoBehaviour:
   push:
     speedMultiplier: 0.7
     pushRotationSpeed: 3
-    pushForce: 20
+    pushForce: 15
+    pushDistanceOffset: 0.2
   detection:
     groundLayer:
       serializedVersion: 2
