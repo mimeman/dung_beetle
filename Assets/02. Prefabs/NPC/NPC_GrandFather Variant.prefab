@@ -12,6 +12,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: NPC_GrandFather Variant
       objectReference: {fileID: 0}
+    - target: {fileID: 4593955344486685599, guid: 2445fcf94747c4d7c817a0c78305110c, type: 3}
+      propertyPath: _npcData
+      value: 
+      objectReference: {fileID: 11400000, guid: 8715554ca8c554d2a9eb30712d4c01e1, type: 2}
     - target: {fileID: 4632231744184137439, guid: 2445fcf94747c4d7c817a0c78305110c, type: 3}
       propertyPath: m_text
       value: '???

@@ -39,6 +39,7 @@ public class NPCInteraction_Ambient : MonoBehaviour
     private bool _isTyping;
     private bool _isActive;
     private string _fullText;
+    private string _npcName;
 
     private Vector3 targetPos;
 
@@ -145,6 +146,8 @@ public class NPCInteraction_Ambient : MonoBehaviour
 
         _currentDialogue = data;
         _fullText = data.Current_Text;
+        if (_npcName != data.Name)
+            _npcName = data.Name;
 
         HideChoices();
         SetActive(_nextIndicator, false);
@@ -245,6 +248,9 @@ public class NPCInteraction_Ambient : MonoBehaviour
     private void OnTypingComplete()
     {
         if (_currentDialogue == null) return;
+
+        if (_npcName != _txtName.text)
+            _txtName.text = _npcName;
 
         if (HasBranches())
             ShowChoices(_currentDialogue.Linked_Branches);
