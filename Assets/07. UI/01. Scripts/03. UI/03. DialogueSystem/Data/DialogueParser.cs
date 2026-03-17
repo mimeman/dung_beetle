@@ -12,7 +12,7 @@ public class DialogueParser : EditorWindow
 
     #region 메인 실행
 
-    [MenuItem("Tool/Parse Dialogue Data")]
+    [MenuItem("Tools/Parse Dialogue Data")]
     public static void Generate()
     {
         Debug.Log("=== 대화 파싱 시작 ===");

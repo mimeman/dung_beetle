@@ -8,7 +8,7 @@ namespace Dung.Inputs
     /// 입력 신호를 받아 C# 이벤트로 알려줌
     /// </summary>
     [CreateAssetMenu(fileName = "InputReader", menuName = "DungBeetle/Input/Input Reader")]
-    public class InputReader : ScriptableObject, PlayerActionMap.IPlayerActions
+    public class InputReader : ScriptableObject, PlayerActionMap.IPlayerActions, IRebind
     {
         public event Action<Vector2> MoveEvent;
         public event Action<Vector2> LookEvent;
@@ -18,10 +18,9 @@ namespace Dung.Inputs
         public event Action<bool> ActionEvent;
         public event Action<bool> AimEvent;
         public event Action InteractEvent;
-        public event Action ToggleViewEvent;
-
 
         private PlayerActionMap _inputActions;
+        public InputActionAsset InputActions => _inputActions.asset;
 
         private void OnEnable()
         {
@@ -69,9 +68,48 @@ namespace Dung.Inputs
         {
             if (context.performed) InteractEvent?.Invoke();
         }
-        public void OnToggleView(InputAction.CallbackContext context)
+
+        public void StartRebinding(string actionName, int bindingIndex, Action onComplete, Action onCancel = null)
         {
-            if (context.performed) ToggleViewEvent?.Invoke();
+            var action = _inputActions.FindAction(actionName);
+            action.Disable();
+
+            action.PerformInteractiveRebinding(bindingIndex)
+                .WithCancelingThrough("<Keyboard>/escape") // ESC로 취소
+                .OnComplete(op =>
+                {
+                    op.Dispose();
+                    action.Enable();
+                    SaveBindings();
+                    onComplete?.Invoke();
+                })
+                .OnCancel(op =>
+                {
+                    op.Dispose();
+                    action.Enable();
+                    onCancel?.Invoke(); // 취소 콜백
+                })
+                .Start();
+        }
+        public void SaveBindings()
+        {
+            var json = _inputActions.SaveBindingOverridesAsJson();
+            PlayerPrefs.SetString("InputBindings", json);
+            PlayerPrefs.Save();
+            Debug.Log($"[InputReader] 바인딩 저장 완료: {json}");
+        }
+        public void LoadBindings()
+        {
+            if (PlayerPrefs.HasKey("InputBindings"))
+            {
+                var json = PlayerPrefs.GetString("InputBindings");
+                _inputActions.asset.LoadBindingOverridesFromJson(json);
+                Debug.Log($"[InputReader] 바인딩 로드 완료: {json}"); // 로드 내용 확인
+            }
+            else
+            {
+                Debug.Log("[InputReader] 저장된 바인딩 없음");
+            }
         }
     }
 }

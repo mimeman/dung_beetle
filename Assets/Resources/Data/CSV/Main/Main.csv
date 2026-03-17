@@ -25,3 +25,10 @@ NPC_ID,Name,Stage,Group_ID,Situation,Step,Current_Text,Next_Step,Branch_ID,Ani_T
 1006,-,Main,Secret,-,200,"쳇, 겁쟁이는 필요 없어.",-,-,Normal,Ignore,-,-,-
 1006,-,Main,Secret,-,1000,배짱이 두둑하군. 받아.,1001,-,Normal,Nod,-,-,-
 1006,-,Main,Secret,-,1001,밤 12시에 우물가로 와.,-,-,Normal,Idle,-,-,-
+1007,???,Main,Secret,-,10,"이보게, 잠깐 와봐.",11,-,Normal,Idle,-,-,-
+1007,???,Main,Secret,-,11,"젊은 사람 안색이 말이야.\n왜이렇게 어둡나?",-,B_Main_A,Normal,Talk,-,-,-
+1007,???,Main,Secret,-,100,"응? 내가 누구냐고?",101,"-",Normal,Look,-,-,-
+1007,마을 촌장님,Main,Secret,-,101,"나 이 마을의 촌장일세.",-,B_Main_B,Shake,Fear,-,-,-
+1007,???,Main,Secret,-,200,"젊은 친구가 안타깝구만...",-,-,Normal,Ignore,-,-,-
+1007,마을 촌장님,Main,Secret,-,1000,"자네 여자친구는 저기 멀리\n저 언덕위로 머리를 식히러 갔네만...",1001,-,Normal,Nod,-,-,-
+1007,마을 촌장님,Main,Secret,-,1001,"둘이 완만하게 합의를 하길 바라네...",-,B_Main_C,Normal,Idle,-,-,-
