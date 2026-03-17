@@ -12,7 +12,7 @@ namespace BirdStates
 
         public override void EnterState(AIController animal)
         {
-            Debug.Log($"{animal.name} Fly Idle State Entered");
+            // Debug.Log($"{animal.name} Fly Idle State Entered");
             animal.StopMoving();
             animal.SetAnimBool(animal.HashIsWalking, true);
             idleTime = Random.Range(animal.Config.idleMinTime, animal.Config.idleMaxTime);
@@ -56,7 +56,7 @@ namespace BirdStates
 
         public override void EnterState(AIController animal)
         {
-            Debug.Log($"{animal.name} Fly Patrol State Entered");
+            // Debug.Log($"{animal.name} Fly Patrol State Entered");
             animal.SetAnimBool(animal.HashIsWalking, true);
             SetNewDestination(animal);
         }
@@ -121,7 +121,7 @@ namespace BirdStates
 
         public override void EnterState(AIController animal)
         {
-            Debug.Log($"{animal.name} Fly Stalking State Entered");
+            // Debug.Log($"{animal.name} Fly Stalking State Entered");
 
             timer = 0f;
 
@@ -187,7 +187,7 @@ namespace BirdStates
 
         public override void EnterState(AIController animal)
         {
-            Debug.Log($"{animal.name} Fly Dive State Entered");
+            // Debug.Log($"{animal.name} Fly Dive State Entered");
             animal.SetAnimBool(animal.HashIsFlying, false);
             animal.SetAnimBool(animal.HashIsLanding, true);
 
@@ -271,7 +271,7 @@ namespace BirdStates
 
         public override void EnterState(AIController animal)
         {
-            Debug.Log($"{animal.name} Fly Ascent State Entered");
+            // Debug.Log($"{animal.name} Fly Ascent State Entered");
             // 현재 위치에서 수직 + 전방 방향으로 상승 목표 설정
 
             animal.SetAnimBool(animal.HashIsFlying, true);
@@ -334,7 +334,7 @@ namespace BirdStates
     {
         public override void EnterState(AIController animal)
         {
-            Debug.Log($"{animal.name} Retreat State Entered");
+            // Debug.Log($"{animal.name} Retreat State Entered");
             animal.Sensor.enabled = false;  // 최적화: 센서 끄기
         }
 

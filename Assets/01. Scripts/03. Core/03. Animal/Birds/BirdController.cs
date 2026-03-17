@@ -4,8 +4,15 @@ using UnityEngine;
 
 public class BirdController : AIController
 {
+    [HideInInspector]
     public new BirdStateMachine StateMachine;
-    Rigidbody rigidbody;
+    new Rigidbody rigidbody;
+
+    void Awake()
+    {
+        base.Awake();
+        StateMachine = GetComponent<BirdStateMachine>();
+    }
 
     new void Start()
     {

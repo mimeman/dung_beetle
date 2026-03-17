@@ -11,7 +11,7 @@ namespace ToadStates
         ToadController toad;
         public override void EnterState(AIController animal)
         {
-            Debug.Log($"{animal.name} entered Idle state");
+            // Debug.Log($"{animal.name} entered Idle state");
             if (!toad)
                 toad = (ToadController)animal;
 
@@ -44,7 +44,7 @@ namespace ToadStates
 
         public override void EnterState(AIController animal)
         {
-            Debug.Log($"{animal.name} entered Aiming state");
+            // Debug.Log($"{animal.name} entered Aiming state");
             if (!toad)
                 toad = (ToadController)animal;
 
@@ -87,7 +87,7 @@ namespace ToadStates
 
         public override void EnterState(AIController animal)
         {
-            Debug.Log($"{animal.name} entered Snap state");
+            // Debug.Log($"{animal.name} entered Snap state");
             if (!toad)
                 toad = (ToadController)animal;
 
@@ -117,7 +117,7 @@ namespace ToadStates
         ToadController toad;
         public override void EnterState(AIController animal)
         {
-            Debug.Log($"{animal.name} entered Pull state");
+            // Debug.Log($"{animal.name} entered Pull state");
             if (!toad)
                 toad = (ToadController)animal;
 
@@ -156,7 +156,7 @@ namespace ToadStates
             if (!toad)
                 toad = (ToadController)animal;
 
-            Debug.Log($"{animal.name} entered Bite state");
+            // Debug.Log($"{animal.name} entered Bite state");
             timer = 0f;
             toad.SetAnimTrigger(toad.HashBite); // 씹는 애니메이션
 
@@ -198,7 +198,7 @@ namespace ToadStates
 
         public override void EnterState(AIController animal)
         {
-            Debug.Log($"{animal.name} entered Stuck state");
+            // Debug.Log($"{animal.name} entered Stuck state");
             if (!toad)
                 toad = (ToadController)animal;
 
@@ -236,7 +236,7 @@ namespace ToadStates
 
         public override void EnterState(AIController animal)
         {
-            Debug.Log($"{animal.name} entered Recover state");
+            // Debug.Log($"{animal.name} entered Recover state");
             if (!toad)
                 toad = (ToadController)animal;
 
@@ -268,7 +268,7 @@ namespace ToadStates
 
         public override void EnterState(AIController animal)
         {
-            Debug.Log($"{animal.name} entered Cooldown state");
+            // Debug.Log($"{animal.name} entered Cooldown state");
             if (!toad)
                 toad = (ToadController)animal;
 
