@@ -8,7 +8,7 @@ public class BirdController : AIController
     public new BirdStateMachine StateMachine;
     new Rigidbody rigidbody;
 
-    void Awake()
+    new void Awake()
     {
         base.Awake();
         StateMachine = GetComponent<BirdStateMachine>();
