@@ -1,6 +1,5 @@
-﻿using Dung.Inputs;
+using Dung.Inputs;
 using UnityEngine;
-using UnityEngine.InputSystem;
 
 public class PlayerInputHandler : MonoBehaviour
 {
@@ -11,14 +10,13 @@ public class PlayerInputHandler : MonoBehaviour
     public Vector2 LookInput { get; private set; }
     public bool IsJumpPressed { get; private set; }
     public bool IsDashPressed { get; private set; }
+    public bool IsInteractPressed { get; private set; }
     public bool IsActionPressed { get; private set; }
     public bool IsAiming { get; private set; }
+    public bool InteractFocus;
     public bool ToggleViewTriggered { get; private set; }
 
-
-
     public bool JumpTriggered { get; private set; }
-    public bool InteractTriggered { get; private set; }
     public bool ActionReleasedTriggered { get; private set; }
 
     public bool SuppressGameplayInput { get; set; } = false;
@@ -39,6 +37,7 @@ public class PlayerInputHandler : MonoBehaviour
         _inputReader.AimEvent += OnAim;
         _inputReader.ToggleViewEvent += OnToggleView;
 
+        DialogueController.OnDialogueStateChanged += OnDialogueStateNotified;
     }
 
     private void OnDisable()
@@ -55,12 +54,27 @@ public class PlayerInputHandler : MonoBehaviour
         _inputReader.AimEvent -= OnAim;
         _inputReader.ToggleViewEvent -= OnToggleView;
 
+        DialogueController.OnDialogueStateChanged -= OnDialogueStateNotified;
+    }
+
+    private void OnDialogueStateNotified(bool isActive)
+    {
+        SuppressGameplayInput = isActive;
+        if (isActive)
+        {
+            MoveInput = Vector2.zero;
+            LookInput = Vector2.zero;
+            IsJumpPressed = false;
+            IsDashPressed = false;
+            IsInteractPressed = false;
+            IsActionPressed = false;
+            IsAiming = false;
+        }
     }
 
     private void LateUpdate()
     {
         JumpTriggered = false;
-        InteractTriggered = false;
         ActionReleasedTriggered = false;
         ToggleViewTriggered = false;
     }
@@ -77,8 +91,8 @@ public class PlayerInputHandler : MonoBehaviour
     private void OnJumpEnd() => IsJumpPressed = false;
 
     private void OnDash(bool active) => IsDashPressed = !SuppressGameplayInput && active;
+    private void OnInteract(bool active) => IsInteractPressed = !SuppressGameplayInput && active;
 
-    private void OnInteract() { if (!SuppressGameplayInput) InteractTriggered = true; }
 
     private void OnAction(bool active)
     {

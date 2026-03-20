@@ -80,7 +80,7 @@ public class UIManager : MonoBehaviour
         else
         {
             ui = _resourceManager.Create<T>(_canvasRoot);
-            if (ui == null) return null; 
+            if (ui == null) return null;
 
             ui.Init(); // 바인딩
             _uiCache.Add(uiName, ui); // 캐시에 등록
@@ -153,5 +153,16 @@ public class UIManager : MonoBehaviour
             Cursor.visible = false;
             Cursor.lockState = CursorLockMode.Locked;
         }
+    }
+
+    public void ShowInteractPrompt(string text)
+    {
+        var prompt = Show<UI_InteractPrompt>();
+        prompt?.SetPrompt(text);
+    }
+
+    public void HideInteractPrompt()
+    {
+        Hide<UI_InteractPrompt>();
     }
 }

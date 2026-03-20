@@ -4,6 +4,7 @@ using System;
 
 public class DialogueController : MonoBehaviour
 {
+    public static DialogueController Instance { get; private set; }
     [Header("Settings")]
     [SerializeField] private string _stageName = "Main";
 
@@ -23,6 +24,13 @@ public class DialogueController : MonoBehaviour
 
     void Awake()
     {
+        if (Instance != null && Instance != this)
+        {
+            Destroy(gameObject);
+            return;
+        }
+        Instance = this;
+
         Initialize();
     }
 

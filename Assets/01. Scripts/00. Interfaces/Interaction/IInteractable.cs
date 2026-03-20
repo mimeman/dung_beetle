@@ -12,8 +12,17 @@
  */
 #endregion
 
+public enum InteractionType
+{
+    Press,
+    Hold
+}
+
 public interface IInteractable
 {
+    // 상호작용 작동 방식
+    InteractionType InteractType { get; }
+
     //상호작용 시 UI에 띄울 안내 문구 (예: "대화하기", "밧줄 잡기", "줍기")
     string InteractionPrompt { get; }
 
@@ -22,7 +31,7 @@ public interface IInteractable
 
     // 상호작용을 수행합니다. (E키 입력 시 호출)
     /// <param name="interactor">상호작용을 시도한 주체 (플레이어)</param>
-    void OnInteract(GameObject interactor);
+    bool OnInteract(GameObject interactor = null);
 
     // 플레이어의 시선이 닿았을 때 (외곽선, UI 팝업)
     void OnFocus();

@@ -72,33 +72,11 @@ public class NPCInteraction_Ambient : MonoBehaviour
         // Billboard
         if (_useBillboard && _isActive && !Camera.main)
             _panelRoot.transform.forward = Camera.main.transform.forward;
-        // Model
-        GameObject model = transform.GetComponentInChildren<Animator>().gameObject;
-        if (model && _isActive)
-        {
-            // 1. 플레이어를 향하는 방향 벡터 계산
-            Vector3 direction = targetPos - transform.position;
-
-            // 2. NPC가 위아래로 기울어지지 않도록 Y축 높이 차이 무시 (중요!)
-            direction.y = 0f;
-
-            // 3. 목표 회전값 계산
-            Quaternion targetRotation = Quaternion.LookRotation(direction);
-
-            // 4. Slerp를 이용해 현재 회전값에서 목표 회전값으로 부드럽게 회전
-            transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, Time.deltaTime * 5f);
-        }
     }
 
     // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
     //  Public API
     // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
-    /// <summary> 플레이어 위치기반 회전
-    public void SetTarget(Vector3 target)
-    {
-        targetPos = target;
-    }
 
     /// <summary> 대화 세션 시작. NPCInteraction에서 호출. </summary>
     public void Setup(NPCDialogueSO npc, int startStep, Action<int> onComplete)

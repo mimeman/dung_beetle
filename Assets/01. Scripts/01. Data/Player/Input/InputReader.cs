@@ -1,6 +1,6 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 using UnityEngine.InputSystem;
-using System;
 
 namespace Dung.Inputs
 {
@@ -17,7 +17,7 @@ namespace Dung.Inputs
         public event Action<bool> DashEvent;
         public event Action<bool> ActionEvent;
         public event Action<bool> AimEvent;
-        public event Action InteractEvent;
+        public event Action<bool> InteractEvent;
         public event Action ToggleViewEvent;
 
         private PlayerActionMap _inputActions;
@@ -67,7 +67,8 @@ namespace Dung.Inputs
 
         public void OnInteract(InputAction.CallbackContext context)
         {
-            if (context.performed) InteractEvent?.Invoke();
+            if (context.performed) InteractEvent?.Invoke(true);
+            if (context.canceled) InteractEvent?.Invoke(false);
         }
 
         public void OnToggleView(InputAction.CallbackContext context)
@@ -75,6 +76,14 @@ namespace Dung.Inputs
             if (context.performed) ToggleViewEvent?.Invoke();
         }
 
+        #region Rebinding
+        /// <summary>
+        /// Key Binding 재설정 메소드
+        /// Runtime Rebinding API 방식 사용
+        /// </summary>
+        /// <param name="actionName"></param>
+        /// <param name="bindingIndex"></param>
+        /// <param name="onComplete"></param>
         public void StartRebinding(string actionName, int bindingIndex, Action onComplete, Action onCancel = null)
         {
             var action = _inputActions.FindAction(actionName);
@@ -117,5 +126,6 @@ namespace Dung.Inputs
                 Debug.Log("[InputReader] 저장된 바인딩 없음");
             }
         }
+        #endregion
     }
 }

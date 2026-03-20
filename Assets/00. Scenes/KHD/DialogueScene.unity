@@ -8525,6 +8525,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 13fe6442506cb7b4a80edaa1ff12ad22, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _cinemachineCamera: {fileID: 0}
   _npcData: {fileID: 11400000, guid: 92892003ac3e62744b2b62ad77d310a8, type: 2}
   IsRepeatable: 1
   FinishMessage: ...
@@ -11511,6 +11512,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 13fe6442506cb7b4a80edaa1ff12ad22, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _cinemachineCamera: {fileID: 0}
   _npcData: {fileID: 11400000, guid: 92892003ac3e62744b2b62ad77d310a8, type: 2}
   IsRepeatable: 1
   FinishMessage: ...
@@ -14344,8 +14346,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 86dab1cd943ae7741ba68235079cad7c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _scriptsToDisable:
-  - {fileID: 0}
+  _scriptsToDisable: []
   _showCursorOnDialogue: 1
 --- !u!114 &1453353312
 MonoBehaviour:
@@ -14359,10 +14360,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d9d219d6d46288f4287b7db45ae4c2cf, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _offset: {x: 0, y: 0.5, z: 0}
   _detectRadius: 2
-  _npcLayer:
+  _interactLayer:
     serializedVersion: 2
-    m_Bits: 32
+    m_Bits: 2080
+  _holdTimeout: 0
+  _debug: 1
 --- !u!136 &1453353313
 CapsuleCollider:
   m_ObjectHideFlags: 0
@@ -14426,6 +14430,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _inputReader: {fileID: 11400000, guid: 29d94998643a1dd47a7245329196dce0, type: 2}
+  InteractFocus: 0
 --- !u!114 &1453353316
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -20724,6 +20729,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 13fe6442506cb7b4a80edaa1ff12ad22, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _cinemachineCamera: {fileID: 0}
   _npcData: {fileID: 11400000, guid: b773ed532ebfe2b4895c736ca236b0c9, type: 2}
   IsRepeatable: 1
   FinishMessage: ...
@@ -21716,6 +21722,38 @@ PrefabInstance:
     - target: {fileID: 1636576619277410431, guid: 3e8b1a299c02d41fea0a316b1490408e, type: 3}
       propertyPath: m_Name
       value: NPC_GrandFather
+      objectReference: {fileID: 0}
+    - target: {fileID: 2115230142134179822, guid: 3e8b1a299c02d41fea0a316b1490408e, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2115230142134179822, guid: 3e8b1a299c02d41fea0a316b1490408e, type: 3}
+      propertyPath: m_AnchorMin.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2115230142134179822, guid: 3e8b1a299c02d41fea0a316b1490408e, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2115230142134179822, guid: 3e8b1a299c02d41fea0a316b1490408e, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3598498696508537770, guid: 3e8b1a299c02d41fea0a316b1490408e, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3598498696508537770, guid: 3e8b1a299c02d41fea0a316b1490408e, type: 3}
+      propertyPath: m_AnchorMin.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3598498696508537770, guid: 3e8b1a299c02d41fea0a316b1490408e, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3598498696508537770, guid: 3e8b1a299c02d41fea0a316b1490408e, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6357108528215115724, guid: 3e8b1a299c02d41fea0a316b1490408e, type: 3}
       propertyPath: m_LocalPosition.x

@@ -1,4 +1,4 @@
-﻿using Dung.Data;
+using Dung.Data;
 using RootMotion.FinalIK;
 using UnityEngine;
 
@@ -39,15 +39,19 @@ public class PlayerController : MonoBehaviour
         StateMachine.Initialize(IdleState);
     }
 
+    private bool _wasInteractPressed;
+
     private void Update()
     {
         StateMachine.CurrentState.LogicUpdate();
         UpdateAnimator();
 
-        if (Input.InteractTriggered)
+        if (Input.IsInteractPressed && !_wasInteractPressed)
         {
             HandleInteractionInput();
         }
+
+        _wasInteractPressed = Input.IsInteractPressed;
     }
 
     private void FixedUpdate()
