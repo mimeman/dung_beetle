@@ -37,7 +37,8 @@ public class PlayerInputHandler : MonoBehaviour
         _inputReader.AimEvent += OnAim;
         _inputReader.ToggleViewEvent += OnToggleView;
 
-        DialogueController.OnDialogueStateChanged += OnDialogueStateNotified;
+        DialogueController.OnDialogueStateChanged += SetInputSuppression;
+        UIManager.OnPopupStateChanged += SetInputSuppression;
     }
 
     private void OnDisable()
@@ -54,10 +55,11 @@ public class PlayerInputHandler : MonoBehaviour
         _inputReader.AimEvent -= OnAim;
         _inputReader.ToggleViewEvent -= OnToggleView;
 
-        DialogueController.OnDialogueStateChanged -= OnDialogueStateNotified;
+        DialogueController.OnDialogueStateChanged -= SetInputSuppression;
+        UIManager.OnPopupStateChanged -= SetInputSuppression;
     }
 
-    private void OnDialogueStateNotified(bool isActive)
+    private void SetInputSuppression(bool isActive)
     {
         SuppressGameplayInput = isActive;
         if (isActive)
