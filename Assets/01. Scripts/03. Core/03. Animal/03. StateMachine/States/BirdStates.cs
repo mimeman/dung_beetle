@@ -192,13 +192,12 @@ namespace BirdStates
             animal.SetAnimBool(animal.HashIsLanding, true);
 
             var bird = (BirdController)animal;
-            Transform target = animal.Sensor.Target.transform;
 
-            if (target != null)
+            if (!animal.Sensor.Target.transform)
             {
                 // 1. 목표 지점 설정: 플레이어 위치
                 // 바닥을 뚫지 않게 하기 위해 약간 위(0.5f)를 목표로 잡음
-                diveTarget = target.position + Vector3.up * 0.5f;
+                diveTarget = animal.Sensor.Target.transform.position + Vector3.up * 0.5f;
             }
             else
             {
@@ -222,7 +221,7 @@ namespace BirdStates
             // ★ 1. 바닥 충돌 방지 (Raycast) - 핵심 로직
             // 진행 방향 앞쪽을 미리 감지합니다.
             // 감지 거리: 현재 속도에 비례해서 길게 잡아야 뚫지 않습니다 (최소 2~3m)
-            float detectionDistance = 3.0f;
+            float detectionDistance = 1.0f;
 
             // Ground 레이어만 감지하도록 LayerMask 설정 (없으면 ~0 으로 모든 레이어)
             // 여기서는 "Ground"라는 레이어가 있다고 가정하거나, 환경 레이어를 지정하세요.

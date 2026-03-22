@@ -23,8 +23,8 @@ MonoBehaviour:
   fovAngle: 270
   fovHeight: 1.5
   soundRange: 10
-  attackRange: 2
-  stoppingDistance: 0.3
+  attackRange: 0.5
+  stoppingDistance: 0.1
   groundLayer:
     serializedVersion: 2
     m_Bits: 129

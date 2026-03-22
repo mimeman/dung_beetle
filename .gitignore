@@ -80,3 +80,5 @@ Packages/com.singularitygroup.hotreload/*
 
 Assets/StylizedNatureBundle/Textures/T_SNB_Skybox_01.tga
 Assets/StylizedNatureBundle/Textures/T_SNB_Skybox_02.tga
+Assets/00. Scenes/Main_Scene/NavMesh-Terrain.asset
+Assets/00. Scenes/Main_Scene/NavMesh-Terrain.asset.meta

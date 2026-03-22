@@ -24,7 +24,7 @@ public class TongueProjectile : MonoBehaviour
         this.controller = controller;
 
         startPos = transform.position;
-        moveDirection = (targetPos - startPos).normalized;
+        moveDirection = (targetPos + Vector3.up * 0.1f - startPos).normalized;
 
         Destroy(gameObject, 3.0f); // 안전장치: 3초 후 자동 소멸
     }
