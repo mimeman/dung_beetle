@@ -178,6 +178,7 @@ public class NPCInteraction : MonoBehaviour, IInteractable
         if (_worldDialogueUI != null)
         {
             DialogueController.NotifyDialogueState(true);
+            SetCameraPriority(10);
             _worldDialogueUI.Setup(_npcData, _currentStep, OnDialogueEnded);
 
             return;
@@ -196,6 +197,7 @@ public class NPCInteraction : MonoBehaviour, IInteractable
     private void OnDialogueEnded(int nextStep)
     {
         _isDialogueActive = false;
+        SetCameraPriority(0);
 
         // 반복 가능한 NPC는 종료(0) 상태를 저장하지 않음
         if (IsRepeatable && nextStep == 0)
@@ -212,7 +214,6 @@ public class NPCInteraction : MonoBehaviour, IInteractable
         }
 
         UpdateState();
-        SetCameraPriority(0);
     }
 
     private void UpdateState()

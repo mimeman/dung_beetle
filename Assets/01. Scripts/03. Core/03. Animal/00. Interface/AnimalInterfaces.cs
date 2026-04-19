@@ -6,7 +6,26 @@ public enum AnimalStateID
     Sleep,
     Breed,
     Fly,
-    Swim
+    Swim,
+    Patrol,
+    Trace,
+    Attack,
+    Hit,
+    Die,
+    // Bird Specific
+    Stalking,
+    Dive,
+    Ascent,
+    Perch,
+    Scatter,
+    // Toad Specific
+    Aiming,
+    Snap,
+    Pull,
+    Bite,
+    Stuck,
+    Recover,
+    Cooldown
 }
 
 public interface IAnimal

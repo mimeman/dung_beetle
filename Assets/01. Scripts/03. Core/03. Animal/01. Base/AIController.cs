@@ -32,6 +32,7 @@ public class AIController : MonoBehaviour
     public AnimalSensor Sensor { get; private set; }
     public Transform Target { get; protected set; }
     public bool IsAnyPlayerNear => Sensor.IsAnyPlayerNear;
+    public event System.Action<BaseState<AIController>> OnStateChanged;
 
     public bool ArrivedAtDestination
     {
@@ -165,6 +166,7 @@ public class AIController : MonoBehaviour
         CurrentState?.ExitState(this);
         CurrentState = newState;
         CurrentState?.EnterState(this);
+        OnStateChanged?.Invoke(newState);
     }
     #endregion
 
