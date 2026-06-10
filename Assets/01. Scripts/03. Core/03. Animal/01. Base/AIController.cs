@@ -256,11 +256,9 @@ public class AIController : MonoBehaviour
 
         if (GetDistanceToTarget() <= config.attackRange)
         {
-            if (Target.TryGetComponent<IPlayerControllable>(out IPlayerControllable playerControllable))
+            if (Target.TryGetComponent<IDamageable>(out IDamageable damageable))
             {
-                SessionManager sessionManager = NetworkManager.Instance?.SessionManager;
-                if (sessionManager)
-                    sessionManager.HandleDamage(playerControllable.Id, config.attackDamage);
+                damageable.TakeDamage(config.attackDamage, gameObject);
             }
         }
     }

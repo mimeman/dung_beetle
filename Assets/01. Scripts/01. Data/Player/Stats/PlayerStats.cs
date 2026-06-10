@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 
 namespace Dung.Data
 {
@@ -19,6 +19,9 @@ namespace Dung.Data
 
         [Header("감지")]
         public DetectionData detection;
+
+        [Header("체력")]
+        public HealthData health;
 
 
         [System.Serializable]
@@ -109,6 +112,19 @@ namespace Dung.Data
 
             [Tooltip("감지 너비 (SphereCast 반경)")]
             public float detectRadius = 0.5f;
+        }
+
+        [System.Serializable]
+        public class HealthData
+        {
+            [Tooltip("최대 체력")]
+            public float maxHP = 100f;
+
+            [Tooltip("피격 후 무적 시간")]
+            public float invincibleDuration = 1.5f;
+
+            [Tooltip("깜빡임 속도 (무적 시간 중)")]
+            public float blinkInterval = 0.1f;
         }
     }
 }

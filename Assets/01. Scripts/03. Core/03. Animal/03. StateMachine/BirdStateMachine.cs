@@ -11,6 +11,8 @@ public class BirdStateMachine : AnimalStateMachine
     private readonly FlyStalking flyStalking = new FlyStalking();
     private readonly FlyDive flyDive = new FlyDive();
     private readonly FlyAscent flyAscent = new FlyAscent();
+    private readonly FlyPerch flyPerch = new FlyPerch();
+    private readonly FlyScatter flyScatter = new FlyScatter();
     private readonly Hit hitState = new Hit();
     private readonly Die dieState = new Die();
 
@@ -19,6 +21,8 @@ public class BirdStateMachine : AnimalStateMachine
     public BaseState<AIController> StalkingState => flyStalking;
     public BaseState<AIController> DiveState => flyDive;
     public BaseState<AIController> AscentState => flyAscent;
+    public BaseState<AIController> PerchState => flyPerch;
+    public BaseState<AIController> ScatterState => flyScatter;
     public override BaseState<AIController> HitState => hitState;
     public override BaseState<AIController> DieState => dieState;
 }

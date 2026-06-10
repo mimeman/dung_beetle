@@ -22,6 +22,7 @@ public class AnimalHealth : MonoBehaviour
     [SerializeField] private float defense;
     [SerializeField] private float currentHealth;
     [SerializeField] private bool isDead;
+    private AnimalSoundPlayer soundPlayer;
     #endregion
 
     #region Properties
@@ -63,6 +64,7 @@ public class AnimalHealth : MonoBehaviour
         isDead = false;
         HitCounter = 0;
         hitTimer = 0f;
+        soundPlayer = GetComponent<AnimalSoundPlayer>();
     }
     #endregion
 
@@ -100,10 +102,12 @@ public class AnimalHealth : MonoBehaviour
         {
             isDead = true;
             OnDeath?.Invoke();
+            if (soundPlayer) soundPlayer.PlayDeathSound();
         }
         else
         {
             OnHit?.Invoke();
+            if (soundPlayer) soundPlayer.PlayHitSound();
         }
     }
 

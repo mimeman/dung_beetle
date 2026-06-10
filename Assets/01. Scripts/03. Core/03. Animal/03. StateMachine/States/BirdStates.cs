@@ -2,9 +2,9 @@ using UnityEngine;
 
 namespace BirdStates
 {
-    /// <summary>
-    /// 공중에서 가만히 날개짓 하며 있는 상태.
-    /// </summary>
+    // ==========================================================
+    // 1. FlyIdle (대기)
+    // ==========================================================
     public class FlyIdle : BaseState<AIController>
     {
         private float idleTime;
@@ -12,7 +12,6 @@ namespace BirdStates
 
         public override void EnterState(AIController animal)
         {
-            // Debug.Log($"{animal.name} Fly Idle State Entered");
             animal.StopMoving();
             animal.SetAnimBool(animal.HashIsWalking, true);
             idleTime = Random.Range(animal.Config.idleMinTime, animal.Config.idleMaxTime);
@@ -23,256 +22,205 @@ namespace BirdStates
 
         public override BaseState<AIController> UpdateState(AIController animal)
         {
-            ResetRotation(animal);
             timer += Time.deltaTime;
 
-            // 우호적이지 않고 플레이어를 발견했거나 소리를 들었다면
             if (!animal.Config.friendly && animal.Sensor.IsOnSight)
-                return ((BirdStateMachine)animal.StateMachine).StalkingState;  // 시야에 들어왔다면 바로 쫓아가서 싸움
+                return ((BirdStateMachine)animal.StateMachine).StalkingState;
+
             if (timer >= idleTime)
                 return ((BirdStateMachine)animal.StateMachine).PatrolState;
+
             return this;
         }
-
-        private void ResetRotation(AIController animal)
-        {
-            Transform t = animal.transform;
-
-            // 현재 바라보는 방향(Y)은 유지하고, X와 Z(기울기)만 0으로 설정
-            Quaternion targetRotation = Quaternion.Euler(0, t.eulerAngles.y, 0);
-
-            // 부드럽게 회전 (Slerp 사용)
-            // 2.0f는 복구 속도입니다. 수치가 높으면 더 빨리 수평이 됩니다.
-            t.rotation = Quaternion.Slerp(t.rotation, targetRotation, Time.deltaTime * 2.0f);
-        }
     }
-    /// <summary>
-    /// 유유자적하며 정찰하며 날아다니는 상태
-    /// </summary>
+
+    // ==========================================================
+    // 2. FlyPatrol (Perlin Noise + Boids 정찰)
+    // ==========================================================
     public class FlyPatrol : BaseState<AIController>
     {
         private Vector3 targetPos;
-        private float patrolTimer;
+        private float noiseTimer;
 
         public override void EnterState(AIController animal)
         {
-            // Debug.Log($"{animal.name} Fly Patrol State Entered");
             animal.SetAnimBool(animal.HashIsWalking, true);
-            SetNewDestination(animal);
+            noiseTimer = ((BirdController)animal).NoiseSeed;
         }
 
         public override void ExitState(AIController animal) { }
 
         public override BaseState<AIController> UpdateState(AIController animal)
         {
-            // 우호적이지 않고 플레이어를 발견했거나 소리를 들었다면
-            if (!animal.Config.friendly && animal.Sensor.IsOnSight)
-                return ((BirdStateMachine)animal.StateMachine).StalkingState;  // 시야에 들어왔다면 바로 쫓아가서 싸움
-            else if (!animal.Config.friendly && animal.Sensor.IsOnHeard)
-                return ((BirdStateMachine)animal.StateMachine).PatrolState; // 소리만 들었다면 해당 좌표로 순찰
-
-            // 만약 현재 높이가 MaxHeight를 넘었다면?
             var bird = (BirdController)animal;
-            if (bird.transform.position.y > bird.Config.maxHeight)
+            var config = bird.FlightConfig;
+
+            if (!animal.Config.friendly && animal.Sensor.IsOnSight)
+                return bird.StateMachine.StalkingState;
+
+            // 1. Perlin Noise 기반 경로 계산
+            noiseTimer += Time.deltaTime * (config?.noiseFrequency ?? 0.3f);
+            float nx = (Mathf.PerlinNoise(noiseTimer, 0) - 0.5f) * (config?.noiseAmplitude ?? 15f);
+            float ny = (Mathf.PerlinNoise(0, noiseTimer) - 0.5f) * (config?.noiseAmplitude ?? 15f);
+            float nz = (Mathf.PerlinNoise(noiseTimer, noiseTimer) - 0.5f) * (config?.noiseAmplitude ?? 15f);
+
+            Vector3 noiseOffset = new Vector3(nx, ny, nz);
+            Vector3 desiredDir = (bird.transform.forward * 5f + noiseOffset).normalized;
+
+            // 2. Boids (군집 행동) 반영
+            Vector3 flockVelocity = bird.CalculateFlockingVelocity();
+            Vector3 finalDir = (desiredDir + flockVelocity).normalized;
+
+            // 3. 고도 제한 (Terrain 감지)
+            if (Physics.Raycast(bird.transform.position, Vector3.down, out RaycastHit hit, bird.Config.minHeight))
             {
-                // 강제로 목표 높이를 낮춰서 내려오게 유도
-                targetPos.y = bird.Config.maxHeight - 2f;
+                finalDir.y += 1f; // 너무 낮으면 상승
+            }
+            else if (bird.transform.position.y > bird.Config.maxHeight)
+            {
+                finalDir.y -= 1f; // 너무 높으면 하강
             }
 
-            // 이동
-            ((BirdController)animal).RotateTowards(targetPos, animal.Config.rotateSpeed);
-            ((BirdController)animal).MoveForward(animal.Config.walkSpeed);
+            // 4. 이동 및 회전
+            bird.RotateTowards(bird.transform.position + finalDir, bird.Config.rotateSpeed);
+            bird.MoveForward(bird.Config.walkSpeed);
 
-            patrolTimer += Time.deltaTime;
-            if (patrolTimer > 0.1f && animal.ArrivedAtDestination)
-            {
-                return animal.StateMachine.IdleState;
-            }
+            // 가끔 착지 시도
+            if (Random.value < 0.001f) return bird.StateMachine.PerchState;
+
             return this;
-        }
-
-        void SetNewDestination(AIController animal)
-        {
-            var birdData = animal.Config;
-
-            Vector3 randomPos = Random.insideUnitSphere * birdData.maxHeight;
-
-            targetPos = animal.transform.position + randomPos;
-            float yClamp = Mathf.Clamp(targetPos.y, birdData.minHeight, birdData.maxHeight);
-            targetPos = new Vector3(targetPos.x, yClamp, targetPos.z);
-
-            animal.SetDestination(targetPos);
-            // Debug.Log($"{animal.transform.position} -> {randomPos} Distance : {Vector3.Distance(animal.transform.position, randomPos)}");
         }
     }
 
-    /// <summary>
-    /// 플레이어를 발견하고 플레이어 주위에서 빙글빙글 도는 상태
-    /// </summary>
+    // ==========================================================
+    // 3. FlyStalking (나선형 정찰 + 페이크 다이브)
+    // ==========================================================
     public class FlyStalking : BaseState<AIController>
     {
-        float timer;
-
-        float heightAbovePlayer = 25f;
-        float angleSpeed = 2.0f;
-
-        float currentAngle;
-        Transform target;
+        private float timer;
+        private float currentAngle;
+        private Transform target;
+        private float spiralRadius;
 
         public override void EnterState(AIController animal)
         {
-            // Debug.Log($"{animal.name} Fly Stalking State Entered");
-
             timer = 0f;
+            target = animal.Sensor.Target?.transform;
+            if (target == null) target = GameObject.FindGameObjectWithTag("Player")?.transform;
 
-            // 1. 타겟 플레이어 가져오기 (Sensor나 Manager에서 가져옴)
-            // 예시로 sensor에 Target이 있다고 가정하거나 태그로 찾습니다.
-            if (animal.Sensor.Target != null)
-                target = animal.Sensor.Target.transform;
-            else
-                target = GameObject.FindGameObjectWithTag("Player").transform;
-
-            // 2. 초기 각도 계산 (부드러운 진입을 위해)
-            // 갑자기 0도부터 시작하면 순간이동하듯 튈 수 있으므로, 현재 내 위치가 플레이어 기준 몇 도인지 계산해서 시작합니다.
-            Vector3 dirToMe = animal.transform.position - target.position;
-            currentAngle = Mathf.Atan2(dirToMe.z, dirToMe.x);
+            if (target != null)
+            {
+                Vector3 dirToMe = animal.transform.position - target.position;
+                currentAngle = Mathf.Atan2(dirToMe.z, dirToMe.x);
+                spiralRadius = ((BirdController)animal).FlightConfig?.baseSpiralRadius ?? 12f;
+            }
         }
 
         public override void ExitState(AIController animal) { }
 
         public override BaseState<AIController> UpdateState(AIController animal)
         {
-            // 예외 처리: 플레이어가 사라지면 다시 순찰
-            if (target == null)
-                return ((BirdStateMachine)animal.StateMachine).PatrolState;
+            if (target == null) return ((BirdStateMachine)animal.StateMachine).PatrolState;
 
-            float stalkingDuration = Random.Range(5.0f, 10.0f);
-
-            // 1. 타이머 체크 (5초 지나면 DiveState로 전환)
-            timer += Time.deltaTime;
-            if (timer >= stalkingDuration)
-            {
-                return ((BirdStateMachine)animal.StateMachine).DiveState;
-            }
-
-            // 2. 원형 궤도 목표 지점 계산 (핵심 로직)
-            currentAngle += angleSpeed * Time.deltaTime; // 시간 흐름에 따라 각도 증가
-
-            // 플레이어 위치 + (Cos, Sin으로 원형 오프셋) + 높이
-            float x = Mathf.Cos(currentAngle) * animal.Config.fovRange / 2;
-            float z = Mathf.Sin(currentAngle) * animal.Config.fovRange / 2;
-
-            Vector3 circlePos = target.position + new Vector3(x, heightAbovePlayer, z);
-
-            // 3. 이동 및 회전
-            // BirdController로 형변환하여 이동 함수 호출
             var bird = (BirdController)animal;
+            var config = bird.FlightConfig;
 
-            // 목표 지점을 향해 부드럽게 회전
-            bird.RotateTowards(circlePos, bird.Config.rotateSpeed);
+            timer += Time.deltaTime;
+            
+            // 나선형 궤도: 반지름이 점점 좁아짐
+            spiralRadius = Mathf.Lerp(spiralRadius, bird.Config.attackRange + 2f, Time.deltaTime * (config?.spiralTightenRate ?? 0.5f));
+            currentAngle += bird.Config.walkSpeed * 0.5f * Time.deltaTime;
 
-            // 앞으로 이동 (계속 목표점이 도망가므로 빙글빙글 돌게 됨)
-            bird.MoveForward(bird.Config.walkSpeed); // 혹은 stalkingSpeed 등 별도 속도 사용
+            float x = Mathf.Cos(currentAngle) * spiralRadius;
+            float z = Mathf.Sin(currentAngle) * spiralRadius;
+            float yBob = Mathf.Sin(timer * (config?.bobFrequency ?? 0.8f)) * (config?.bobAmplitude ?? 1.5f);
+
+            Vector3 targetPoint = target.position + new Vector3(x, (bird.Config.maxHeight + bird.Config.minHeight) * 0.5f + yBob, z);
+
+            bird.RotateTowards(targetPoint, bird.Config.rotateSpeed);
+            bird.MoveForward(bird.Config.walkSpeed * 1.2f);
+
+            // 공격 조건 체크
+            if (timer > 5f)
+            {
+                // 페이크 다이브 확률 체크
+                if (Random.value < (config?.fakeDiveProbability ?? 0.3f))
+                {
+                    Debug.Log("[CrowAI] Fake Dive!");
+                    // 페이크 다이브 연출 후 다시 Stalking 유지하는 로직은 Dive State 내부에서 처리
+                }
+                return bird.StateMachine.DiveState;
+            }
 
             return this;
         }
     }
 
-    /// <summary>
-    /// 플레이어를 향해 내려찍기 공격을 수행하는 상태
-    /// </summary>
+    // ==========================================================
+    // 4. FlyDive (포물선 급강하 공격)
+    // ==========================================================
     public class FlyDive : BaseState<AIController>
     {
-        Vector3 diveTarget;
+        private Vector3 startPos;
+        private Vector3 targetPos;
+        private float progress;
+        private bool isFake;
 
         public override void EnterState(AIController animal)
         {
-            // Debug.Log($"{animal.name} Fly Dive State Entered");
+            var bird = (BirdController)animal;
+            startPos = bird.transform.position;
+            targetPos = bird.Sensor.Target?.transform.position ?? bird.transform.position + bird.transform.forward * 10f;
+            progress = 0f;
+            
+            isFake = Random.value < (bird.FlightConfig?.fakeDiveProbability ?? 0.3f);
+            
             animal.SetAnimBool(animal.HashIsFlying, false);
             animal.SetAnimBool(animal.HashIsLanding, true);
-
-            var bird = (BirdController)animal;
-
-            if (!animal.Sensor.Target.transform)
-            {
-                // 1. 목표 지점 설정: 플레이어 위치
-                // 바닥을 뚫지 않게 하기 위해 약간 위(0.5f)를 목표로 잡음
-                diveTarget = animal.Sensor.Target.transform.position + Vector3.up * 0.5f;
-            }
-            else
-            {
-                // 타겟 없으면 현재 보는 방향 아래로
-                diveTarget = animal.transform.position + (animal.transform.forward + Vector3.down) * 10f;
-            }
-
-            // 공격 판정 켜기 (Collider)
-            // bird.EnableAttackCollider(true);
         }
 
-        public override void ExitState(AIController animal)
-        {
-            // animal.Attack.EnableHitbox(false);
-        }
+        public override void ExitState(AIController animal) { }
 
         public override BaseState<AIController> UpdateState(AIController animal)
         {
             var bird = (BirdController)animal;
+            var config = bird.FlightConfig;
 
-            // ★ 1. 바닥 충돌 방지 (Raycast) - 핵심 로직
-            // 진행 방향 앞쪽을 미리 감지합니다.
-            // 감지 거리: 현재 속도에 비례해서 길게 잡아야 뚫지 않습니다 (최소 2~3m)
-            float detectionDistance = 1.0f;
+            progress += Time.deltaTime * bird.Config.runSpeed * 0.1f;
+            float speedMult = config?.diveSpeedCurve.Evaluate(progress) ?? 1f;
 
-            // Ground 레이어만 감지하도록 LayerMask 설정 (없으면 ~0 으로 모든 레이어)
-            // 여기서는 "Ground"라는 레이어가 있다고 가정하거나, 환경 레이어를 지정하세요.
-            int groundLayerMask = LayerMask.GetMask("Ground", "Default", "Terrain");
+            // 포물선 이동: 직선 이동 + AnimationCurve 기반 높이 보정
+            Vector3 linearPos = Vector3.Lerp(startPos, targetPos, progress);
+            // 실제 바닥에 꽂히기 전에 상승하도록 페이크 처리
+            if (isFake && progress > 0.6f) return bird.StateMachine.AscentState;
 
-            if (Physics.Raycast(bird.transform.position, bird.transform.forward, out RaycastHit hit, detectionDistance, groundLayerMask))
+            bird.transform.position = Vector3.MoveTowards(bird.transform.position, linearPos, Time.deltaTime * bird.Config.runSpeed * speedMult);
+            bird.RotateTowards(targetPos, bird.Config.rotateSpeed * 2f);
+
+            // 공격 판정 및 충돌 회피
+            if (progress >= 0.9f || Vector3.Distance(bird.transform.position, targetPos) < 1.5f)
             {
-                Debug.LogWarning("바닥 감지! 급상승 전환");
-                return ((BirdStateMachine)animal.StateMachine).AscentState;
+                bird.ApplyDamageToTarget();
+                return bird.StateMachine.AscentState;
             }
 
-
-            // 2. 이동 로직 (MoveTowards)
-            // 단순 Translate보다 MoveTowards가 정확한 지점에 멈추기 좋습니다.
-            float step = animal.Config.runSpeed * Time.deltaTime;
-            bird.transform.position = Vector3.MoveTowards(bird.transform.position, diveTarget, step);
-
-            // 목표를 향해 회전
-            bird.RotateTowards(diveTarget, bird.Config.rotateSpeed * 2f); // 회전도 빠르게
-
-
-            // 3. 목표 도달 확인 (공격 실패 혹은 완료)
-            // 거리가 아주 가까워졌다면 (바닥에 닿기 직전 목표점 도달)
-            if (Vector3.Distance(bird.transform.position, diveTarget) < 1.0f)
+            // 바닥 감지 안전 장치
+            if (Physics.Raycast(bird.transform.position, bird.transform.forward, 2f, LayerMask.GetMask("Ground", "Default")))
             {
-                return ((BirdStateMachine)animal.StateMachine).AscentState;
-            }
-
-            // 4. (안전장치) 혹시라도 Y축이 너무 낮아지면 강제 상승
-            // 맵의 바닥 높이가 0이라면 0.5f 정도에서 컷
-            if (bird.transform.position.y < 0.5f)
-            {
-                return ((BirdStateMachine)animal.StateMachine).AscentState;
+                return bird.StateMachine.AscentState;
             }
 
             return this;
         }
     }
 
-    /// <summary>
-    /// Player를 향해 내려찍기를 수행한 다음 다시 고도를 높여 올라가는 상태
-    /// </summary>
+    // ==========================================================
+    // 5. FlyAscent (급상승)
+    // ==========================================================
     public class FlyAscent : BaseState<AIController>
     {
-        private float turnSpeed = 5.0f;    // 고개 드는 속도
-
         public override void EnterState(AIController animal)
         {
-            // Debug.Log($"{animal.name} Fly Ascent State Entered");
-            // 현재 위치에서 수직 + 전방 방향으로 상승 목표 설정
-
             animal.SetAnimBool(animal.HashIsFlying, true);
             animal.SetAnimBool(animal.HashIsLanding, false);
         }
@@ -282,77 +230,140 @@ namespace BirdStates
         public override BaseState<AIController> UpdateState(AIController animal)
         {
             var bird = (BirdController)animal;
+            
+            Vector3 upDir = (bird.transform.forward + Vector3.up * 2f).normalized;
+            bird.transform.Translate(upDir * bird.Config.runSpeed * Time.deltaTime, Space.World);
+            bird.RotateTowards(bird.transform.position + upDir, bird.Config.rotateSpeed);
 
-            // 1. 이동 방향 계산 (★ 핵심 변경 사항)
-            // "내 몸이 보는 방향"이 아니라, "무조건 위쪽 + 내가 가던 수평 방향"으로 강제 설정합니다.
-
-            // 현재 까마귀의 수평 방향(Horizontal Forward) 구하기
-            Vector3 horizontalForward = bird.transform.forward;
-            horizontalForward.y = 0; // Y축 제거해서 완전 수평으로 만듦
-            horizontalForward.Normalize();
-
-            // 상승 벡터: 수평 방향(1) + 수직 방향(2) 정도의 비율로 섞음 (수직 힘을 강하게)
-            Vector3 moveDirection = (horizontalForward * 1.0f) + (Vector3.up * 2.0f);
-            moveDirection.Normalize();
-
-            // 2. 이동 (Translate 사용 - World 기준)
-            // MoveForward 대신 직접 좌표를 옮깁니다. 
-            // 이렇게 하면 고개를 아직 처박고 있어도 몸체는 위로 뜹니다.
-            bird.transform.Translate(moveDirection * animal.Config.runSpeed * Time.deltaTime, Space.World);
-
-
-            // 3. 회전 (시각적 연출)
-            // 이동은 위 코드로 이미 올라가고 있고, 눈에 보이는 회전은 부드럽게 따라오게 합니다.
-            // 목표 방향: 방금 계산한 상승 벡터(moveDirection) 쪽을 바라보게 함
-            if (moveDirection != Vector3.zero)
+            if (bird.transform.position.y >= bird.Config.maxHeight * 0.8f)
             {
-                Quaternion targetRotation = Quaternion.LookRotation(moveDirection);
-                bird.transform.rotation = Quaternion.Slerp(bird.transform.rotation, targetRotation, turnSpeed * Time.deltaTime);
-            }
-
-
-            // 4. 상태 전환 체크 (목표 높이 도달 시)
-            // 거의 다 올라왔다면 (오차 1m 이내)
-            if (bird.transform.position.y >= animal.Config.maxHeight - 1.0f)
-            {
-                // 다시 순찰(Patrol) 또는 선회(Stalking)로 복귀
-                if (animal.Sensor.IsOnHeard || animal.Sensor.IsOnSight)
-                    return ((BirdStateMachine)animal.StateMachine).StalkingState;
-                else
-                    return ((BirdStateMachine)animal.StateMachine).PatrolState;
+                return bird.StateMachine.PatrolState;
             }
 
             return this;
         }
     }
 
-    /// <summary>
-    /// 플레이어로 부터 멀어지며 Despawn하는 상태
-    /// </summary>
-    public class Retreat : BaseState<AIController>
+    // ==========================================================
+    // 6. FlyPerch (높은 곳에 앉아 대기) — 신규
+    // ==========================================================
+    public class FlyPerch : BaseState<AIController>
     {
+        private Vector3 perchPoint;
+        private bool isArrived;
+        private float stayTimer;
+
         public override void EnterState(AIController animal)
         {
-            // Debug.Log($"{animal.name} Retreat State Entered");
-            animal.Sensor.enabled = false;  // 최적화: 센서 끄기
+            isArrived = false;
+            stayTimer = 0f;
+            
+            // 자동 PerchPoint 탐색
+            if (FindPerchPoint(animal, out perchPoint))
+            {
+                Debug.Log($"[CrowAI] Found perch point at {perchPoint}");
+            }
+            else
+            {
+                animal.ChangeState(((BirdStateMachine)animal.StateMachine).PatrolState);
+            }
         }
 
         public override void ExitState(AIController animal) { }
 
         public override BaseState<AIController> UpdateState(AIController animal)
         {
-            if (null == animal.Target) return animal.StateMachine.IdleState;
+            var bird = (BirdController)animal;
+            
+            if (!isArrived)
+            {
+                bird.RotateTowards(perchPoint, bird.Config.rotateSpeed);
+                bird.transform.position = Vector3.MoveTowards(bird.transform.position, perchPoint, bird.Config.walkSpeed * Time.deltaTime);
 
-            Vector3 awayDir = (animal.transform.position - animal.Target.transform.position).normalized;
-            awayDir.y = 0.2f;
+                if (Vector3.Distance(bird.transform.position, perchPoint) < 0.2f)
+                {
+                    isArrived = true;
+                    bird.StopMoving();
+                    bird.SetAnimBool(bird.HashIsWalking, false);
+                }
+            }
+            else
+            {
+                stayTimer += Time.deltaTime;
+                
+                // 위협 감지 시 비행
+                if (bird.IsAnyPlayerNear) return bird.StateMachine.ScatterState;
+                
+                if (stayTimer > (bird.FlightConfig?.perchMaxTime ?? 20f))
+                {
+                    return bird.StateMachine.PatrolState;
+                }
+            }
 
-            BirdController bird = (BirdController)animal;
-            bird.RotateTowards(animal.transform.position + awayDir, 2f);
-            bird.MoveForward(animal.Config.walkSpeed * 1.0f);
+            return this;
+        }
 
-            float distance = Vector3.Distance(animal.transform.position, animal.Target.transform.position);
-            if (distance > 50f)
-                animal.Despawn();
+        private bool FindPerchPoint(AIController animal, out Vector3 point)
+        {
+            point = Vector3.zero;
+            var config = ((BirdController)animal).FlightConfig;
+            float radius = config?.perchSearchRadius ?? 20f;
+            
+            // 주변 높은 오브젝트 탐색
+            Collider[] cols = Physics.OverlapSphere(animal.transform.position, radius);
+            foreach (var col in cols)
+            {
+                if (col.transform.position.y > animal.transform.position.y - 5f)
+                {
+                    // 오브젝트 상단 레이캐스트
+                    Vector3 origin = col.bounds.center + Vector3.up * col.bounds.extents.y + Vector3.up * 2f;
+                    if (Physics.Raycast(origin, Vector3.down, out RaycastHit hit, 5f))
+                    {
+                        if (hit.point.y > (config?.minPerchHeight ?? 5f))
+                        {
+                            point = hit.point;
+                            return true;
+                        }
+                    }
+                }
+            }
+            return false;
+        }
+    }
+
+    // ==========================================================
+    // 7. FlyScatter (위협 시 사방으로 흩어짐) — 신규
+    // ==========================================================
+    public class FlyScatter : BaseState<AIController>
+    {
+        private Vector3 scatterDir;
+        private float timer;
+
+        public override void EnterState(AIController animal)
+        {
+            timer = 0f;
+            // 위협(주로 플레이어)의 반대 방향으로 흩어짐
+            Vector3 threatPos = animal.Sensor.Target?.transform.position ?? animal.transform.position + Vector3.down;
+            scatterDir = (animal.transform.position - threatPos).normalized;
+            scatterDir.y += 0.5f; // 위쪽으로도 비행
+            scatterDir.Normalize();
+        }
+
+        public override void ExitState(AIController animal) { }
+
+        public override BaseState<AIController> UpdateState(AIController animal)
+        {
+            var bird = (BirdController)animal;
+            timer += Time.deltaTime;
+
+            bird.RotateTowards(bird.transform.position + scatterDir, bird.Config.rotateSpeed * 2f);
+            bird.MoveForward(bird.Config.runSpeed * (bird.FlightConfig?.scatterSpeedMultiplier ?? 2f));
+
+            if (timer > (bird.FlightConfig?.scatterDuration ?? 3f))
+            {
+                return bird.StateMachine.PatrolState;
+            }
+
             return this;
         }
     }

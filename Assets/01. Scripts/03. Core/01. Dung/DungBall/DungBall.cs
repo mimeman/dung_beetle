@@ -1,4 +1,4 @@
-﻿#region 설명
+#region 설명
 /* [DungBall]
  * 쇠똥구리 게임의 핵심 오브젝트인 '쇠똥'의 중앙 제어 장치(Hub)
  * * [구조: Facade Pattern]
@@ -23,7 +23,7 @@ using Dung.Enums;
 [RequireComponent(typeof(DungGrowth))]
 [RequireComponent(typeof(DungPhysics))]
 [RequireComponent(typeof(DungAudio))]
-public class DungBall : MonoBehaviour, IGrabbable, ISaveable, IIDProvider, IGrowable
+public class DungBall : MonoBehaviour, IGrabbable, ISaveable, IIDProvider, IGrowable, IDamageable
 {
     #region Variables & Modules
 
@@ -61,6 +61,9 @@ public class DungBall : MonoBehaviour, IGrabbable, ISaveable, IIDProvider, IGrow
     // 잡았을 때 느껴지는 무게감 (플레이어 이동 속도 감소 계산용)
     public float DragWeight => _growth.CurrentMass * 0.5f;
 
+    // [IDamageable]
+    public float MaxHealth => _stats.growth.initialMass * 10f; // 임시: 초기 질량의 10배를 체력으로 간주
+    public float CurrentHealth => _growth.CurrentMass; // 질량 자체가 체력 역할
     #endregion
 
     #region Initialization
@@ -128,7 +131,22 @@ public class DungBall : MonoBehaviour, IGrabbable, ISaveable, IIDProvider, IGrow
         if (_visual != null) _visual.PlayCrumbleEffect();
         if (_audio != null) _audio.PlayBreakSound();
 
+        // 똥조각 스폰 (맛보기 구현)
+        SpawnDungPieces();
+
         gameObject.SetActive(false);
+    }
+
+    private void SpawnDungPieces()
+    {
+        int pieceCount = Mathf.Clamp(Mathf.FloorToInt(_growth.CurrentMass / 5f), 1, 5);
+        Debug.Log($"[DungBall] Spawning {pieceCount} DungPieces upon destruction.");
+        
+        for (int i = 0; i < pieceCount; i++)
+        {
+            // TODO: 실제 똥조각 프리팹 스폰 로직
+            // Instantiate(dungPiecePrefab, transform.position + Random.insideUnitSphere, Quaternion.identity);
+        }
     }
 
     #endregion
@@ -204,6 +222,17 @@ public class DungBall : MonoBehaviour, IGrabbable, ISaveable, IIDProvider, IGrow
         _growth.LoadMassState(data.currentMass);
     }
 
+    public void TakeDamage(float amount, GameObject instigator = null)
+    {
+        // 쇠똥은 데미지를 받으면 질량이 줄어듭니다.
+        Shrink(amount, ShrinkType.Physical);
+        Debug.Log($"[DungBall] Took {amount} damage from {instigator?.name ?? "Unknown"}. Current Mass: {_growth.CurrentMass}");
+    }
+
+    public void Die()
+    {
+        Crumble();
+    }
     #endregion
 
 #if UNITY_EDITOR
